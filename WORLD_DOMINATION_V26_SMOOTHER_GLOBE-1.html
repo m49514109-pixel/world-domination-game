@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WORLD DOMINATION — V20 — Globe Map & Real Economy</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
+:root{--bg:#080d18;--panel:#101a2b;--panel2:#142239;--line:#293b58;--gold:#e9bd68;--gold2:#ffe0a0;--muted:#91a2bd;--white:#f2f5fb;--cyan:#5bd5df;--green:#62d6a0;--red:#f07883}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -10%,#233653 0,transparent 42%),radial-gradient(ellipse at 0 80%,#152944 0,transparent 35%),var(--bg);color:var(--white);font-family:Vazirmatn,system-ui,sans-serif;min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}.shell{max-width:1440px;margin:auto;padding:20px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 19px;border:1px solid #31415b;background:#0c1525e8;backdrop-filter:blur(18px);border-radius:19px;box-shadow:0 15px 50px #0005}.brand{display:flex;align-items:center;gap:12px}.crest{width:45px;height:45px;border-radius:15px;background:linear-gradient(145deg,#ffdf9c,#a96c2c);display:grid;place-items:center;color:#1a2030;font-size:23px;box-shadow:0 0 25px #e9bd6840}.brand b{font-size:16px;letter-spacing:1.5px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px}.topright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:#c7d2e4;font-size:11px;background:#111d30}.live{color:var(--green)}.avatar{width:34px;height:34px;border-radius:50%;background:#253955;display:grid;place-items:center}.hero{margin:24px 0 17px;display:flex;align-items:end;justify-content:space-between;gap:15px}.eyebrow{color:var(--gold);font-size:10px;letter-spacing:2px;font-weight:700}.hero h1{font-size:clamp(24px,4vw,39px);margin:5px 0 0;font-weight:900;line-height:1.4}.hero h1 span{color:var(--gold2)}.sub{color:var(--muted);font-size:12px;margin-top:4px}.round{min-width:125px;text-align:center;border:1px solid #6a5737;background:linear-gradient(135deg,#2b261f,#141d2d);border-radius:16px;padding:9px 15px}.round small{display:block;color:var(--gold);font-size:10px}.round strong{font-size:24px}.layout{display:grid;grid-template-columns:1.55fr .85fr;gap:16px}.maincol,.sidecol{display:grid;gap:16px;align-content:start}.panel{background:linear-gradient(145deg,#142238ed,#0e1829ed);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 18px 45px #0003;position:relative;overflow:hidden}.panel:before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,#d8b36b70,transparent)}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.sectionhead h2{font-size:14px;margin:0}.sectionhead small{color:var(--muted);font-size:10px}.country{display:flex;align-items:center;gap:14px}.flag{width:60px;height:60px;border-radius:17px;background:linear-gradient(145deg,#233956,#15253b);display:grid;place-items:center;font-size:33px;border:1px solid #52617a}.country h2{margin:0;font-size:21px}.country p{margin:3px 0 0;color:var(--muted);font-size:11px}.rank{margin-right:auto;text-align:left;color:var(--gold);font-size:10px}.rank b{font-size:18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:17px}.stat{padding:12px;border:1px solid #293c58;border-radius:14px;background:linear-gradient(145deg,#182943,#111d30);min-width:0}.stat label{display:block;color:var(--muted);font-size:10px}.stat strong{display:block;font-size:19px;margin-top:4px;overflow-wrap:anywhere}.stat em{font-style:normal;font-size:9px;color:var(--green)}.actiongrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.action{border:1px solid #334866;background:linear-gradient(145deg,#1a2d49,#111d30);color:#e8eef8;border-radius:14px;padding:13px 10px;text-align:right;transition:.2s;min-height:83px}.action:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 10px 25px #d6a94b1c}.action:disabled{opacity:.38;cursor:not-allowed;transform:none}.action .ico{font-size:20px;display:block;margin-bottom:5px}.action b{font-size:11px}.action small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.goldbtn,.endturn{border:1px solid #f4d28d;border-radius:13px;padding:12px 16px;color:#201b12;font-weight:900;background:linear-gradient(110deg,#b9823e,#f2d18b 48%,#c38b48);box-shadow:0 8px 28px #dcae5a2b}.goldbtn:hover,.endturn:hover{filter:brightness(1.08);transform:translateY(-1px)}.endturn{width:100%;margin-top:12px}.secondary{border:1px solid #3a506e;background:#172840;color:#e8eef8;border-radius:12px;padding:10px 13px;font-size:11px}.danger{border-color:#75404b;color:#ffc3c8}.field{display:grid;gap:6px;margin:9px 0}.field label{color:var(--muted);font-size:10px}.field input,.field select{width:100%;border:1px solid #344965;background:#0b1525;color:var(--white);border-radius:11px;padding:11px 12px;outline:none}.field input:focus,.field select:focus{border-color:var(--gold)}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.setupgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.players{display:grid;gap:8px}.player{display:flex;align-items:center;gap:9px;padding:9px;border-radius:12px;background:#101d30;border:1px solid #263a56}.mini{width:33px;height:33px;border-radius:10px;background:#263a55;display:grid;place-items:center;font-size:18px}.player b{font-size:11px}.player small{display:block;color:var(--muted);font-size:9px}.status{margin-right:auto;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #62d6a0}.progress{height:7px;background:#26364e;border-radius:99px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:linear-gradient(90deg,#9d713d,#f4d18c);border-radius:99px}.turnrow{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:7px}.log,.chatlist{display:grid;gap:10px;max-height:230px;overflow:auto}.event{display:flex;gap:9px;align-items:flex-start}.dot{width:7px;height:7px;background:var(--gold);border-radius:50%;margin-top:7px;flex:none}.event p{margin:0;font-size:10px;color:#d8e0ed;line-height:1.8}.event small{display:block;color:var(--muted);font-size:9px}.chatmsg{padding:8px 10px;background:#101d30;border:1px solid #263a56;border-radius:11px;font-size:10px;overflow-wrap:anywhere}.chatmsg b{color:var(--gold2)}.notice{padding:10px 12px;border:1px solid #38506d;background:#102038;border-radius:12px;color:#c7d7ec;font-size:10px;line-height:1.8;margin-top:10px}.notice.error{border-color:#78414c;color:#ffc1c7;background:#281720}.notice.ok{border-color:#32614f;color:#b5f0d2;background:#10251f}.hidden{display:none!important}.footer{color:#64758e;text-align:center;font-size:9px;padding:20px}.target{margin-top:10px}.target select{width:100%;background:#0b1525;color:white;border:1px solid #344965;border-radius:10px;padding:10px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.top{padding:11px}.topright .pill:nth-child(2){display:none}}@media(max-width:480px){.shell{padding:11px}.actiongrid{grid-template-columns:repeat(2,1fr)}.brand b{font-size:12px}.hero h1{font-size:24px}.round{min-width:90px;padding:8px}.panel{padding:14px}.setupgrid{grid-template-columns:1fr}}
+
+/* V10: wide command layout and strategic map */
+.shell{max-width:none;width:100%;padding:12px 16px}.hero{margin:12px 0}.layout{grid-template-columns:minmax(0,1fr) 310px;gap:12px}.maincol,.sidecol{gap:12px}.panel{padding:15px}.world-map-panel{padding:13px 15px}.world-map-wrap{position:relative;overflow:hidden;border:1px solid #2d4562;border-radius:15px;background:radial-gradient(ellipse at 50% 45%,#1a3048 0,#0c1728 72%);min-height:270px}.world-map-wrap svg{display:block;width:100%;height:auto;min-height:260px;max-height:430px}.graticule path{fill:none;stroke:#29415b;stroke-width:1;stroke-dasharray:3 9;opacity:.65}.continents path{filter:drop-shadow(0 8px 8px #0005)}.map-marker{cursor:pointer}.map-marker circle.base{fill:#0c1a2b;stroke:#9bb4ca;stroke-width:2}.map-marker.own circle.base{stroke:#e9bd68;stroke-width:3}.map-marker circle.ping{fill:none;stroke:#e9bd68;stroke-width:2;opacity:.75;animation:mapPing 2.4s ease-out infinite}.map-marker text{fill:#f2f5fb;font:700 12px Vazirmatn, sans-serif;paint-order:stroke;stroke:#0b1525;stroke-width:3px;stroke-linejoin:round}.map-marker:hover circle.base,.map-marker.selected circle.base{fill:#d6a84e;stroke:#fff1c8}.map-marker.selected text{fill:#ffe0a0}.map-route{fill:none;stroke:url(#routeGrad);stroke-width:3;stroke-linecap:round;stroke-dasharray:9 8;filter:url(#mapGlow);animation:routeDash 1s linear infinite}.map-impact{fill:none;stroke:#ffcf72;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:impactPulse 1.3s ease-out 2}.map-legend{display:flex;gap:18px;flex-wrap:wrap;padding:8px 12px;color:#9fb1c8;font-size:10px}.map-legend span{display:flex;align-items:center;gap:6px}.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}.legend-dot.own{background:#e9bd68}.legend-dot.other{background:#5bd5df}.legend-line{width:20px;border-top:2px dashed #e9bd68;display:inline-block}.map-live{font-size:10px;color:#62d6a0;display:flex;align-items:center;gap:7px}.map-live i{width:7px;height:7px;border-radius:50%;background:#62d6a0;box-shadow:0 0 10px #62d6a0}.map-caption{display:flex;justify-content:space-between;gap:8px;color:#91a2bd;font-size:10px;padding:8px 2px 0}.map-caption-tag{color:#d6b45c;letter-spacing:1.5px;font-size:9px}.map-event-toast{position:absolute;left:12px;top:12px;padding:8px 11px;border:1px solid #80683d;background:#111d2ddd;border-radius:10px;color:#ffe0a0;font-size:10px;opacity:0;transform:translateY(-5px);pointer-events:none}.map-event-toast.show{animation:toastIn 3.2s ease both}@keyframes mapPing{0%{r:8;opacity:.8}100%{r:22;opacity:0}}@keyframes routeDash{to{stroke-dashoffset:-34}}@keyframes impactPulse{0%{r:5;opacity:1}100%{r:28;opacity:0}}@keyframes toastIn{0%{opacity:0;transform:translateY(-5px)}12%,78%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-5px)}}
+@media(min-width:1100px){body{overflow-x:hidden}.gameAreaWide{min-height:calc(100vh - 90px)}.layout{grid-template-columns:minmax(0,1fr) 300px}.world-map-wrap svg{min-height:300px}}
+@media(max-width:850px){.shell{padding:9px}.layout{grid-template-columns:1fr}.world-map-wrap svg{min-height:210px}.world-map-panel{order:-1}}
+@media(max-width:480px){.world-map-wrap svg{min-height:180px}.map-legend{gap:9px;font-size:9px}.map-caption{font-size:9px}}
+
+.daily-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #80683d;background:linear-gradient(120deg,#302719,#17243a);color:#ffe0a0;border-radius:13px;padding:12px 14px;font-weight:800}
+.daily-trigger small{display:block;color:#b8a47c;font-size:9px;font-weight:500;margin-top:3px}
+.daily-modal{position:fixed;inset:0;z-index:9999;background:#030914d9;display:none;align-items:center;justify-content:center;padding:16px}
+.daily-modal.open{display:flex}.daily-dialog{width:min(720px,100%);max-height:85vh;overflow:auto;background:#101d30;border:1px solid #526783;border-radius:18px;padding:18px;box-shadow:0 25px 80px #0009}
+.daily-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.daily-head h2{font-size:16px;margin:0;color:#f4d18b}.daily-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.daily-controls input{width:100px;background:#0b1525;color:white;border:1px solid #344965;border-radius:10px;padding:9px}.daily-item{padding:11px 12px;margin:8px 0;background:#14243a;border:1px solid #30445f;border-radius:12px;font-size:11px;line-height:1.9}.daily-item small{display:block;color:#91a2bd;font-size:9px}.daily-empty{color:#aab8ca;text-align:center;padding:25px 8px;font-size:11px}
+
+/* V11 upgrade: landscape-first layout, real country borders, zoom and game-only operation choices */
+@media (orientation:landscape) and (max-width:1100px){.layout{grid-template-columns:minmax(0,1fr) 270px;align-items:start}.world-map-wrap svg{min-height:245px;max-height:54vh}.shell{padding:8px}.panel{padding:12px}.maincol,.sidecol{gap:9px}}
+@media (orientation:portrait) and (max-width:850px){.layout{grid-template-columns:1fr}.world-map-wrap svg{min-height:230px;max-height:42vh}}
+.world-map-wrap{min-height:230px;touch-action:pan-y}
+#worldMapSvg{touch-action:none;cursor:grab}
+#worldMapSvg:active{cursor:grabbing}
+#countryShapes path{stroke:#8ba2b9;stroke-width:.8;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill .18s,stroke .18s}
+#countryShapes path:hover{stroke:#ffe0a0;stroke-width:1.8}
+.map-zoom{position:absolute;right:10px;bottom:48px;z-index:3;display:flex;gap:5px;direction:ltr}
+.map-zoom button{width:32px;height:32px;border:1px solid #526783;border-radius:9px;background:#101d30eF;color:#f3d596;font-weight:900;font-size:17px}
+.map-zoom button:hover{background:#263b56}
+.map-footnote{font-size:9px;color:#8296b1;padding:3px 2px 0}
+#operationVariant{border-color:#80683d}
+.health-box{margin-top:12px;padding:11px 13px;border:1px solid #30445f;border-radius:13px;background:#101d30}
+.health-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#dce6f4}
+.health-head strong{color:#62d6a0;font-size:14px}
+.health-track{height:8px;margin-top:8px;border-radius:20px;background:#29384d;overflow:hidden}
+.health-fill{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#b74d58,#e6a45b);transition:width .3s}
+.health-fill.good{background:linear-gradient(90deg,#2c9b75,#62d6a0)}
+.health-fill.mid{background:linear-gradient(90deg,#b88736,#e9bd68)}
+
+
+/* V13: abstract hydraulic-bomb inventory and command UI */
+.hydraulic-panel{border-color:#62464d;background:radial-gradient(ellipse at 88% 10%,#4b2634 0,transparent 38%),linear-gradient(145deg,#1b2032,#101827 72%);}
+.hydraulic-panel:before{background:linear-gradient(90deg,transparent,#e78a8a99,#e9bd6870,transparent)}
+.hydraulic-layout{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:16px;align-items:center}
+.hydraulic-copy{min-width:0}.hydraulic-kicker{font-size:9px;letter-spacing:1.6px;color:#e9a3a9;font-weight:800}
+.hydraulic-title{font-size:18px;font-weight:900;margin:4px 0;color:#fff0e8}
+.hydraulic-desc{font-size:10px;color:#b7c2d3;line-height:2;margin:0 0 10px}
+.hydraulic-visual{height:132px;border:1px solid #85525b66;border-radius:18px;background:radial-gradient(circle,#773b48aa 0,#291c2b 58%,#131d2d 100%);display:grid;place-items:center;position:relative;overflow:hidden}
+.hydraulic-visual:before,.hydraulic-visual:after{content:"";position:absolute;border:1px solid #f0b5a044;border-radius:50%;width:95px;height:95px;animation:hydroPulse 3s ease-out infinite}
+.hydraulic-visual:after{animation-delay:1.5s}
+.hydraulic-visual svg{width:82px;height:82px;z-index:1;filter:drop-shadow(0 0 15px #f09a8a55)}
+@keyframes hydroPulse{0%{transform:scale(.55);opacity:.7}100%{transform:scale(1.55);opacity:0}}
+.bomb-counter{display:flex;align-items:center;gap:7px;margin:10px 0 4px;flex-wrap:wrap}
+.bomb-token{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;border:1px solid #87545c;background:linear-gradient(145deg,#59313c,#251e2d);color:#ffd9c8;font-size:15px;box-shadow:inset 0 1px #ffffff18}
+.bomb-token.spent{opacity:.25;filter:grayscale(1);box-shadow:none}
+.bomb-count{font-size:11px;color:#ffe1c7;font-weight:800;margin-right:4px}
+.hydraulic-meta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.hydraulic-meta span{font-size:9px;padding:5px 8px;border:1px solid #694650;border-radius:999px;background:#281d2a;color:#e9c5c7}
+.hydraulic-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end;margin-top:10px}
+.hydraulic-controls .field{margin:0}
+.hydraulic-fire{border:1px solid #f0b6a0;background:linear-gradient(115deg,#8f3e4b,#d16d65 55%,#e8b078);color:#1e1720;font-weight:900;border-radius:12px;padding:11px 16px;min-width:126px;box-shadow:0 8px 25px #b9565540}
+.hydraulic-fire:disabled{opacity:.4;filter:grayscale(1);cursor:not-allowed;box-shadow:none}
+.hydraulic-note{font-size:9px;color:#aab7ca;line-height:1.9;margin-top:8px}
+@media(max-width:560px){.hydraulic-layout{grid-template-columns:1fr 104px}.hydraulic-visual{height:105px}.hydraulic-visual svg{width:67px;height:67px}.hydraulic-controls{grid-template-columns:1fr}.hydraulic-fire{width:100%}}
+
+
+/* V14: restored full treasury and economy dashboard */
+.economy-panel{border-color:#665331;background:radial-gradient(ellipse at 90% 0%,#4a3a1d66,transparent 42%),linear-gradient(145deg,#17263a,#101827)}
+.economy-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.economy-balance{padding:14px;border:1px solid #655435;border-radius:14px;background:linear-gradient(145deg,#30291d,#172337)}
+.economy-balance small{display:block;color:#c9b78e;font-size:10px}.economy-balance strong{display:block;color:#ffe0a0;font-size:clamp(18px,2.5vw,25px);margin-top:4px;overflow-wrap:anywhere}
+.economy-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.economy-item{padding:10px;border:1px solid #34465e;background:#101d30;border-radius:12px;min-width:0}
+.economy-item b{display:block;font-size:10px;color:#e6d3a8}.economy-item span{display:block;font-size:12px;color:#f5d38e;margin-top:4px;font-weight:800}.economy-item small{display:block;font-size:9px;color:#91a2bd;margin-top:2px}
+.economy-preview{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:11px;padding:11px 13px;border:1px solid #5c5139;border-radius:12px;background:#211f1a;color:#e6dfcf;font-size:10px}.economy-preview strong{font-size:16px;color:#ffe0a0}
+.economy-foot{font-size:9px;color:#91a2bd;line-height:1.8;margin-top:8px}
+@media(max-width:900px){.economy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.economy-top{grid-template-columns:1fr 1fr}.economy-balance{padding:10px}.economy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* V16 — Advanced interactive strategic map and country intelligence cards */
+.map-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
+.map-toolbar input,.map-toolbar select{min-width:145px;flex:1;background:#0a1526;color:#edf4ff;border:1px solid #344b68;border-radius:11px;padding:9px 11px;font:inherit;font-size:11px;outline:none}
+.map-toolbar input:focus,.map-toolbar select:focus{border-color:var(--gold)}
+.map-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}
+.map-kpi{background:linear-gradient(145deg,#192c46,#101c2e);border:1px solid #304763;border-radius:12px;padding:10px;min-width:0}
+.map-kpi small{display:block;color:#91a2bd;font-size:9px}.map-kpi b{display:block;color:#f4d28e;font-size:15px;margin-top:4px;overflow-wrap:anywhere}
+.map-country-card{display:none;margin-top:12px;border:1px solid #526b88;border-radius:16px;background:linear-gradient(145deg,#152943,#0c1728);padding:14px;box-shadow:inset 0 1px #ffffff0b,0 12px 28px #0003}
+.map-country-card.open{display:block;animation:mapCardIn .22s ease-out}
+@keyframes mapCardIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.map-country-head{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:12px}
+.map-country-flag{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;background:#263d59;border:1px solid #617792;font-size:27px}
+.map-country-title{flex:1;min-width:130px}.map-country-title h3{margin:0;font-size:17px}.map-country-title p{margin:3px 0 0;color:#9aacc4;font-size:10px}
+.map-status{border-radius:99px;padding:6px 10px;font-size:9px;border:1px solid #4a6684;color:#b9cce2;background:#172c45}.map-status.mine{border-color:#8c7042;color:#ffe0a0;background:#382d1d}.map-status.free{border-color:#39745d;color:#a6f0c8;background:#102a22}
+.map-country-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.map-country-stat{background:#0b1728;border:1px solid #293f5c;border-radius:11px;padding:9px;min-width:0}
+.map-country-stat small{display:block;color:#8fa3bd;font-size:9px}.map-country-stat b{display:block;margin-top:4px;font-size:13px;color:#edf4ff;overflow-wrap:anywhere}
+.map-country-subhead{font-size:10px;color:#e8c987;margin:13px 0 7px}
+.map-extra{display:flex;gap:6px;flex-wrap:wrap}.map-extra span{border:1px solid #344b68;background:#12243a;border-radius:9px;padding:6px 8px;font-size:9px;color:#c8d7e9}
+.map-empty{color:#91a2bd;font-size:10px;padding:8px 0}
+.map-marker circle.base{r:7}.map-marker.free circle.base{fill:#173b31;stroke:#64c99b}.map-marker.occupied circle.base{fill:#183a50;stroke:#5bd5df}.map-marker.own circle.base{fill:#6b4d22;stroke:#ffe0a0;stroke-width:3}
+.map-marker text{font-size:13px}.map-marker.free text{fill:#b8f0d1}.map-marker.occupied text{fill:#b7edf1}
+.map-marker .marker-halo{fill:none;stroke:#f5d48d;stroke-width:1;opacity:.45}
+.world-map-wrap{min-height:330px;background:radial-gradient(ellipse at 50% 45%,#1d3b54 0,#0a1527 75%)}
+.world-map-wrap svg{min-height:310px;max-height:560px}
+.map-zoom button{min-width:34px;min-height:34px;border:1px solid #48617e;border-radius:10px;background:#10243a;color:#f3d18b;font-weight:900}
+.map-zoom button:hover{background:#27415e}
+@media(max-width:700px){.map-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.map-country-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.world-map-wrap{min-height:230px}.world-map-wrap svg{min-height:220px}}
+
+
+/* V17 — cinematic atlas map visual overhaul */
+.world-map-panel{background:linear-gradient(145deg,#132b43f5,#091827f7 70%);border-color:#3a5c78;box-shadow:0 22px 65px #0008,inset 0 1px #b6e8ff12}
+.world-map-panel:after{content:"STRATEGIC ATLAS  •  WORLD INTELLIGENCE";position:absolute;top:13px;left:18px;color:#8bb9cb;font-size:8px;letter-spacing:2px;opacity:.6;pointer-events:none}
+.world-map-wrap{isolation:isolate;display:grid;place-items:center;height:clamp(360px,56vw,590px);min-height:360px;padding:8px;border:1px solid #4b7894;border-radius:19px;background:radial-gradient(ellipse at 50% 48%,#1b4b68 0,#0b2136 58%,#061321 100%);box-shadow:inset 0 0 55px #000b,0 12px 32px #0007}
+.world-map-wrap:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 50% 50%,transparent 30%,#020a1477 100%),linear-gradient(115deg,#7dd9f00b,transparent 38%,#eac87908 75%,transparent)}
+.world-map-wrap:after{content:"";position:absolute;z-index:1;pointer-events:none;width:min(92%,560px);aspect-ratio:1;border-radius:50%;border:1px solid #8bd9f055;box-shadow:0 0 0 7px #70c9e00a,0 0 32px #55c8ec22,inset -22px -12px 42px #020b18a8,inset 13px 8px 28px #b5f5ff18;background:radial-gradient(circle at 31% 24%,#c5f7ff18,transparent 24%),radial-gradient(circle at 68% 78%,#02091635,transparent 48%)}
+.world-map-wrap svg{position:relative;z-index:0;width:min(100%,560px);height:100%;min-height:0;max-height:560px;aspect-ratio:1;filter:saturate(1.22) contrast(1.1);overflow:visible}
+#countryShapes path{stroke-linejoin:round;stroke-linecap:round;transition:fill .28s,stroke .22s,opacity .22s,filter .22s;paint-order:stroke fill}
+#countryShapes path:hover{stroke:#fff1c5!important;stroke-width:2.1!important;filter:brightness(1.28) drop-shadow(0 0 7px #8ce7ff)!important;opacity:1!important}
+#countryShapes path.map-country-selected{stroke:#fff0b4!important;stroke-width:2.8!important;filter:brightness(1.35) drop-shadow(0 0 11px #f6ca70)!important;opacity:1!important}
+.graticule path{stroke:#7ec9df!important;stroke-opacity:.25!important;stroke-width:.8!important;stroke-dasharray:2 7!important}
+.map-marker{filter:drop-shadow(0 2px 5px #020914) drop-shadow(0 0 5px #71d9ec66)}
+.map-marker circle.base{r:8;stroke-width:2.2;filter:url(#mapGlow)}
+.map-marker circle.ping{stroke-width:2.4;opacity:.8}
+.map-marker .marker-halo{r:15;stroke:#fff0b4;stroke-width:1;stroke-dasharray:2 4}
+.map-marker text{font-size:13px;font-weight:900;letter-spacing:.15px;paint-order:stroke;stroke:#061321;stroke-width:4px;filter:drop-shadow(0 1px 2px #000)}
+.map-marker:hover circle.base,.map-marker.selected circle.base{r:10;stroke:#fff!important;stroke-width:3.2;filter:drop-shadow(0 0 9px #ffe4a0)}
+.map-toolbar input,.map-toolbar select{background:linear-gradient(145deg,#102941,#091827);border-color:#42627c;box-shadow:inset 0 1px #ffffff0a}
+.map-kpi{background:linear-gradient(145deg,#1d3b55,#0b1b2c);border-color:#3b5c76;box-shadow:inset 0 1px #ffffff10,0 6px 16px #0002}
+.map-kpi b{font-size:17px;text-shadow:0 0 12px #f4d28e35}
+.map-legend{position:relative;z-index:2;gap:15px;padding:10px 13px;margin:0 9px 8px;border:1px solid #42627b88;border-radius:12px;background:#071727b8;backdrop-filter:blur(8px)}
+.legend-dot{width:10px;height:10px;box-shadow:0 0 10px currentColor}
+.legend-dot.own{background:#f2c76f;color:#f2c76f}.legend-dot.other{background:#62dce8;color:#62dce8}.legend-line{border-color:#f2c76f}
+.map-country-card{background:linear-gradient(145deg,#193a53,#0a1b2c);border-color:#5b8198;box-shadow:inset 0 1px #ffffff12,0 15px 38px #0005}
+.map-country-stat{background:linear-gradient(145deg,#102b41,#091a2a);border-color:#35556e}
+.map-country-stat b{color:#f2f6fb}
+.map-country-stat:first-child{border-color:#987b49;background:linear-gradient(145deg,#45371f,#17283a)}
+.map-extra span{background:linear-gradient(145deg,#17354b,#0c2031);border-color:#42617a}
+.map-caption-tag{color:#e8c987;text-shadow:0 0 10px #e8c98755}
+.map-footnote{color:#86a7bc}
+@media(min-width:1100px){.world-map-wrap{height:590px}.world-map-wrap svg{width:min(100%,560px);height:100%;min-height:0;max-height:560px}}
+@media(max-width:700px){.world-map-wrap{height:clamp(350px,100vw,440px);min-height:350px}.world-map-wrap svg{width:100%;height:100%;min-height:0;max-height:430px}.world-map-wrap:after{width:min(94%,420px)}.world-map-panel:after{display:none}}
+
+
+/* V19 — screenshot-matched luminous globe and live country budget table */
+.world-map-panel{background:linear-gradient(155deg,#142b40f5,#0b1a2a 76%);border-color:#38536a;box-shadow:0 20px 55px #0008,inset 0 1px #d8f8ff12}
+.world-map-wrap{height:clamp(430px,78vw,650px);min-height:430px;border-radius:22px;background:radial-gradient(ellipse at 50% 46%,#174b60 0,#0c2a3e 48%,#061321 78%);border:1px solid #46647b;box-shadow:inset 0 0 70px #020b18,0 14px 35px #0007}
+.world-map-wrap:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 50% 48%,transparent 35%,#02091688 100%),linear-gradient(90deg,transparent 49.8%,#8addeb12 50%,transparent 50.2%),linear-gradient(0deg,transparent 49.8%,#8addeb12 50%,transparent 50.2%)}
+.world-map-wrap:after{width:min(94%,610px);border-color:#78d8e34d;box-shadow:0 0 0 9px #67cddd0a,0 0 48px #55c8ec35,inset -28px -18px 55px #020b18c9,inset 18px 12px 34px #b5f5ff22;background:radial-gradient(circle at 31% 24%,#c5f7ff25,transparent 25%),radial-gradient(circle at 70% 76%,#02091652,transparent 50%)}
+.world-map-wrap svg{width:min(100%,620px);max-height:620px;filter:saturate(1.28) contrast(1.08)}
+#worldMapSvg #countryShapes path{stroke-linejoin:round;transition:filter .2s,opacity .2s,fill .2s}
+.map-marker{filter:drop-shadow(0 4px 7px #000b) drop-shadow(0 0 8px #69d9e355);cursor:pointer}
+.map-marker circle.base{display:none}.map-marker circle.ping{stroke:#b8f7ef;stroke-width:3;opacity:.5}
+.map-marker text{font-size:23px;font-weight:900;fill:#f5fbff;stroke:#071522;stroke-width:5px;paint-order:stroke;letter-spacing:0}
+.map-marker .marker-pill{fill:#071522eF;stroke:#9fc9d4aa;stroke-width:2;filter:url(#mapGlow)}
+.map-marker.own .marker-pill{fill:#4b371fF2;stroke:#ffe0a0}.map-marker.free .marker-pill{fill:#0d3027ed;stroke:#79d9a7}.map-marker.occupied .marker-pill{fill:#0a2638ed;stroke:#75dce8}
+.map-marker:hover .marker-pill,.map-marker.selected .marker-pill{fill:#d6ae62;stroke:#fff0c8;stroke-width:3}
+.map-marker:hover text,.map-marker.selected text{fill:#142235;stroke:#f7e4b8;stroke-width:1.5}
+.map-legend{background:#071827d9;border-color:#4a7184;border-radius:14px;backdrop-filter:blur(9px)}
+@media(max-width:700px){.world-map-wrap{height:clamp(390px,108vw,500px);min-height:390px}.world-map-wrap svg{width:100%;height:100%;max-height:500px}.world-map-wrap:after{width:min(94%,450px)}.map-marker text{font-size:21px}}
+.budget-table-panel{margin-top:14px;padding:13px;border:1px solid #3a5870;border-radius:16px;background:linear-gradient(145deg,#11283b,#0a1929);box-shadow:inset 0 1px #ffffff0a}
+.budget-table-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.budget-table-head b{font-size:12px;color:#f0d49a}.budget-table-head small{font-size:9px;color:#91a9bc}
+.budget-table-wrap{overflow-x:auto;border:1px solid #2c465d;border-radius:12px}
+.budget-table{width:100%;border-collapse:collapse;min-width:610px;font-size:11px;text-align:right}
+.budget-table .real-economy-cell{color:#ffe0a0;font-weight:800;white-space:nowrap}.budget-table th{background:#1a354a;color:#a9dce5;padding:10px 9px;font-weight:700;white-space:nowrap}
+.budget-table td{padding:9px;border-top:1px solid #263d51;color:#dce8f2;white-space:nowrap}
+.budget-table tr:nth-child(even) td{background:#ffffff05}.budget-table td.money{color:#f5d18b;font-weight:800;font-variant-numeric:tabular-nums}.budget-table td.free-cell{color:#8ba0b5}.budget-table tr.mine-row td{background:#5d47251f}.budget-table tr.mine-row td:first-child{border-right:3px solid #e9bd68}
+.budget-table-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:9px;color:#9cb2c4;font-size:9px}
+
+
+/* V21 — live top-10 leaderboard */
+.leaderboard-panel{border-color:#526b7d;background:linear-gradient(150deg,#172d40,#0a1928 78%);box-shadow:0 14px 38px #0006,inset 0 1px #ffffff12}
+.leaderboard-panel .sectionhead{margin-bottom:10px}
+.leaderboard-sub{font-size:9px;color:#91aabd}
+.leaderboard-list{display:grid;gap:7px}
+.leaderboard-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px;border:1px solid #294459;border-radius:12px;background:linear-gradient(100deg,#11283a,#0c1d2c)}
+.leaderboard-row.mine{border-color:#a8874e;background:linear-gradient(100deg,#382f20,#102438)}
+.leaderboard-rank{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#20384b;color:#b9d2df;font-weight:900;font-size:11px}
+.leaderboard-row.rank-1 .leaderboard-rank{background:linear-gradient(145deg,#f6df9c,#b88737);color:#2a2112}
+.leaderboard-row.rank-2 .leaderboard-rank{background:linear-gradient(145deg,#e5edf3,#8499a8);color:#15212b}
+.leaderboard-row.rank-3 .leaderboard-rank{background:linear-gradient(145deg,#e9b58c,#98603c);color:#24160e}
+.leaderboard-person{min-width:0;display:grid;gap:3px}.leaderboard-person b{font-size:10px;color:#edf5fa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.leaderboard-person small{font-size:8px;color:#8fa9ba;white-space:nowrap}
+.leaderboard-score{font-size:12px;font-weight:900;color:#f0cf8a;font-variant-numeric:tabular-nums;text-align:left}.leaderboard-score small{display:block;font-size:8px;color:#91aabd;font-weight:500}
+.leaderboard-foot{margin-top:9px;padding-top:8px;border-top:1px solid #2a4356;color:#829bad;font-size:8px;line-height:1.8}
+.leaderboard-empty{padding:14px;border:1px dashed #39546a;border-radius:12px;color:#9cb1c0;text-align:center;font-size:10px}
+
+
+/* V24 — true interactive orthographic globe + fullscreen map workspace */
+.map-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.map-expand-btn,.map-close-btn{border:1px solid #6b8195;border-radius:11px;background:linear-gradient(145deg,#29465d,#142b40);color:#ffe2a1;padding:8px 12px;font-weight:850;cursor:pointer;box-shadow:0 5px 16px #0005}
+.map-expand-btn{font-size:12px}.map-expand-btn span{margin-right:4px}
+.map-close-btn{display:none;font-size:17px;line-height:1;padding:7px 11px}
+.world-map-wrap{height:clamp(300px,48vw,390px)!important;min-height:300px!important;max-height:390px!important;overflow:hidden}
+.world-map-wrap svg{width:100%;height:100%;max-height:390px!important;min-height:0!important;touch-action:none}
+#worldMapSvg{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+#worldMapSvg:active{cursor:grabbing}
+#worldMapSvg #mapViewport{transform:none!important}
+#countryShapes path{cursor:pointer}
+.world-map-panel.map-fullscreen{position:fixed!important;inset:0!important;z-index:100000!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;margin:0!important;border-radius:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;padding:clamp(12px,2vw,24px)!important;background:linear-gradient(160deg,#10283b 0%,#071321 85%)!important}
+.world-map-panel.map-fullscreen .world-map-wrap{height:min(66vh,720px)!important;min-height:300px!important;max-height:720px!important}
+.world-map-panel.map-fullscreen .world-map-wrap svg{max-height:100%!important}
+.world-map-panel.map-fullscreen .map-close-btn{display:inline-flex}
+.world-map-panel.map-fullscreen .map-expand-btn{display:none}
+.world-map-panel.map-fullscreen .map-country-card{display:block}
+body.map-fullscreen-open{overflow:hidden!important}
+@media(max-width:600px){
+ .map-expand-btn{padding:7px 9px}.map-expand-btn span{display:none}
+ .world-map-wrap{height:300px!important;min-height:280px!important}
+ .world-map-panel.map-fullscreen .world-map-wrap{height:48vh!important;min-height:240px!important}
+ .world-map-panel.map-fullscreen{padding:10px!important}
+ .world-map-panel.map-fullscreen .sectionhead{align-items:flex-start}
+}
+
+
+/* V26: lightweight globe while finger is moving */
+#worldMapSvg.globe-is-dragging #countryShapes path{filter:none!important;transition:none!important;stroke-width:.35!important;opacity:.96!important}
+#worldMapSvg.globe-is-dragging .graticule path{stroke-opacity:.12!important;stroke-width:.45!important;stroke-dasharray:none!important}
+#worldMapSvg.globe-is-dragging{will-change:transform}
+</style></head>
+<body><div class="shell">
+<header class="top"><div class="brand"><div class="crest">♛</div><div><b>WORLD DOMINATION</b><small>GLOBAL STRATEGY • COMMAND CENTER</small></div></div><div class="topright"><span class="pill live" id="connection">● آماده اتصال</span><span class="pill" id="roomBadge">بدون اتاق</span><div class="avatar">👑</div></div></header>
+<section class="hero"><div><div class="eyebrow">فرماندهی کل • جهان مشترک آنلاین</div><h1>سرنوشت جهان، <span>با تصمیم تو</span></h1><div class="sub">اقتصاد بساز، مذاکره کن و کشور خودت را مدیریت کن.</div></div><div class="round"><small>دور جاری</small><strong id="roundNum">—</strong></div></section>
+
+<section class="panel" id="setupPanel"><div class="sectionhead"><h2>اتصال و ورود به بازی</h2><small>اتصال یک‌باره به جهان مشترک</small></div>
+ <div class="setupgrid"><div class="field"><label>Supabase Project URL</label><input id="supUrl" value="https://dpuvcpxicgsilfnthzjh.supabase.co"></div><div class="field"><label>Supabase Publishable Key</label><input id="supKey" type="password" placeholder="کلید عمومی پروژه را وارد کن"></div></div>
+ <div class="row"><button class="goldbtn" id="connectBtn">اتصال و ورود ناشناس</button><span id="authLabel" class="pill">وارد نشده‌اید</span></div>
+ <div class="field" style="margin-top:14px"><label>نام بازیکن</label><input id="nickname" maxlength="24" placeholder="اسم دلخواهت را بنویس"></div>
+ <div class="field"><label>کشورهای آزاد برای انتخاب</label><div id="availableCountries" class="row" style="gap:8px;min-height:42px"><span class="pill">ابتدا به سرور وصل شو</span></div></div>
+ <div class="field"><label>کشور انتخابی</label><select id="countryChoice" disabled><option value="1">🇮🇷 ایران</option><option value="2">🇩🇪 آلمان</option><option value="3">🇫🇷 فرانسه</option><option value="4">🇹🇷 ترکیه</option><option value="5">🇬🇧 بریتانیا</option><option value="6">🇮🇹 ایتالیا</option><option value="7">🇪🇸 اسپانیا</option><option value="8">🇸🇦 عربستان</option><option value="9">🇪🇬 مصر</option><option value="10">🇦🇪 امارات</option></select></div>
+ <button class="goldbtn" id="enterWorldBtn" disabled>🌍 ورود به جهان مشترک</button>
+ <div id="setupMsg" class="notice">برای اتصال، آدرس پروژه از قبل وارد شده است. کلید Publishable را وارد کن؛ کلید Secret را هرگز اینجا قرار نده.</div>
+</section>
+
+<div id="gameArea" class="hidden">
+<div class="layout"><main class="maincol">
+<section class="panel world-map-panel" id="worldMapPanel">
+ <div class="sectionhead"><div><h2>🌍 نقشه استراتژیک جهان</h2><small>کره واقعی و چرخان زمین • برای چرخاندن، خود کره را بکش</small></div><div class="map-head-actions"><span class="map-live"><i></i> جهان زنده</span><button type="button" id="mapExpandBtn" class="map-expand-btn" title="نمایش تمام‌صفحه نقشه" aria-label="بزرگ‌نمایی نقشه">⛶ <span>بزرگ‌نمایی</span></button><button type="button" id="mapCloseFullscreenBtn" class="map-close-btn" title="بستن تمام‌صفحه" aria-label="بستن تمام‌صفحه">✕</button></div></div>
+ <div class="map-toolbar">
+  <input id="mapCountrySearch" type="search" placeholder="🔎 جست‌وجوی کشور..." aria-label="جست‌وجوی کشور">
+  <select id="mapCountryFilter" aria-label="فیلتر کشورها"><option value="all">نمایش همه کشورها</option><option value="occupied">فقط کشورهای دارای بازیکن</option><option value="free">فقط کشورهای آزاد</option><option value="mine">فقط کشور من</option></select>
+  <button type="button" class="secondary" id="mapShowAllBtn">نمایش همه</button>
+ </div>
+ <div class="map-kpis">
+  <div class="map-kpi"><small>کشورهای حاضر</small><b id="mapKpiPlayers">۰</b></div>
+  <div class="map-kpi"><small>کشورهای آزاد</small><b id="mapKpiFree">۰</b></div>
+  <div class="map-kpi"><small>مجموع خزانه کشورها</small><b id="mapKpiBudget">$0</b></div>
+  <div class="map-kpi"><small>میانگین سلامت</small><b id="mapKpiHealth">—</b></div>
+ </div>
+ <div class="world-map-wrap"><div class="map-event-toast" id="mapEventToast">رویداد جدید در نقشه</div>
+  <svg id="worldMapSvg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" role="img" aria-label="کره نورانی جهان با نشان‌های کپسولی کشورها"><g id="mapViewport" clip-path="url(#globeClip)">
+   <defs>
+    <clipPath id="globeClip"><circle cx="500" cy="500" r="420"/></clipPath>
+    <linearGradient id="landGrad" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="#35516d"/><stop offset="1" stop-color="#20364f"/></linearGradient>
+    <linearGradient id="routeGrad"><stop offset="0" stop-color="#e9bd68"/><stop offset="1" stop-color="#5bd5df"/></linearGradient>
+    <filter id="mapGlow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="landShadow" x="-20%" y="-20%" width="140%" height="150%"><feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"/><feOffset dy="5" result="offset"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="countryOwn" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe6a2"/><stop offset=".48" stop-color="#bd8c3d"/><stop offset="1" stop-color="#67451f"/></linearGradient>
+    <linearGradient id="countryOccupied" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8cf3f1"/><stop offset=".5" stop-color="#287e91"/><stop offset="1" stop-color="#174354"/></linearGradient>
+    <linearGradient id="countryFree" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8be9b5"/><stop offset=".5" stop-color="#287b5a"/><stop offset="1" stop-color="#164432"/></linearGradient>
+    <radialGradient id="oceanGrad" cx="34%" cy="25%" r="78%"><stop offset="0" stop-color="#397d91"/><stop offset=".28" stop-color="#1b526e"/><stop offset=".68" stop-color="#10314e"/><stop offset="1" stop-color="#061426"/></radialGradient>
+    <radialGradient id="globeShade"><stop offset=".48" stop-color="#061426" stop-opacity="0"/><stop offset=".78" stop-color="#061426" stop-opacity=".08"/><stop offset="1" stop-color="#020914" stop-opacity=".84"/></radialGradient>
+    <pattern id="oceanGrid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38" fill="none" stroke="#8bd7e8" stroke-opacity=".075" stroke-width=".8"/><circle cx="0" cy="0" r="1.2" fill="#a6e9f5" fill-opacity=".19"/></pattern>
+   </defs>
+   <circle cx="500" cy="500" r="420" fill="url(#oceanGrad)"/>
+   <circle cx="500" cy="500" r="420" fill="url(#oceanGrid)"/>
+   <circle cx="500" cy="500" r="405" fill="none" stroke="#9deaff" stroke-opacity=".13" stroke-width="1.5"/>
+   <circle cx="500" cy="500" r="365" fill="none" stroke="#68b6cf" stroke-opacity=".09" stroke-width="1" stroke-dasharray="4 10"/>
+   <g opacity=".4" fill="#c1e8f3"><circle cx="175" cy="270" r="2"/><circle cx="265" cy="720" r="1.5"/><circle cx="420" cy="170" r="1.8"/><circle cx="775" cy="245" r="1.5"/><circle cx="840" cy="690" r="2"/><circle cx="650" cy="825" r="1.3"/><circle cx="135" cy="520" r="1.2"/><circle cx="890" cy="430" r="1.3"/><circle cx="345" cy="850" r="1.2"/></g>
+   <g class="graticule"><path d="M100 300H900M80 500H920M100 700H900M300 100V900M500 80V920M700 100V900"/></g>
+   <g class="continents" transform="translate(0 300)" fill="url(#landGrad)" stroke="#65809a" stroke-width="2" stroke-linejoin="round">
+    <path d="M86 93l42-35 62-9 32 17 48-4 33 23-10 24-34 11-12 30-29 12-10 31-34 4-20-24-30-6-22-28-35-9-16-23zM250 205l27 10 18 28-4 38-22 28-12 51-20 33-18-19 6-43-13-34 12-42z"/>
+    <path d="M425 82l39-23 61 4 30 18 54-5 31 23 48-2 39 26-7 25-31 13-13 31-34 8-21-17-24 5-19-20-31 5-20-20-30 4-20-20-29 1-20-25zM506 213l35-8 38 20 20 40-14 43-21 50-30 39-24-17-3-42-22-34 2-44z"/>
+    <path d="M710 285l42-22 60 10 36 29-13 31-43 12-42-10-31-22z"/>
+    <path d="M850 92l32-14 42 19 20 33-18 23-39-8-28-23z"/>
+   </g>
+   <g id="countryShapes"></g><circle cx="500" cy="500" r="420" fill="url(#globeShade)" pointer-events="none"/><circle cx="500" cy="500" r="420" fill="none" stroke="#a9eaff" stroke-opacity=".58" stroke-width="2.2" pointer-events="none"/><circle cx="500" cy="500" r="414" fill="none" stroke="#e4faff" stroke-opacity=".12" stroke-width="7" pointer-events="none"/><g id="mapRoutes"></g><g id="mapMarkers"></g>
+  </g></svg>
+  <div class="map-zoom" aria-label="کنترل بزرگ‌نمایی نقشه"><button type="button" id="mapZoomIn" title="بزرگ‌نمایی">+</button><button type="button" id="mapZoomOut" title="کوچک‌نمایی">−</button><button type="button" id="mapZoomReset" title="نمای کامل">⌂</button></div>
+  <div class="map-legend"><span><i class="legend-dot own"></i> کشور شما</span><span><i class="legend-dot other"></i> کشور بازیکن</span><span><i class="legend-line"></i> رویداد نمایشی</span></div>
+ </div>
+ <div class="map-footnote">مرزهای کشورها از داده جغرافیایی عمومی ترسیم می‌شوند؛ برای بارگذاری نقشه اتصال اینترنت لازم است.</div>
+ <div class="map-caption"><span id="mapHint">برای دیدن اطلاعات، روی هر کشور کلیک کن.</span><span class="map-caption-tag">WORLD GLOBE • LIVE COUNTRY BUDGETS</span></div>
+ <div class="map-country-card" id="mapCountryCard" aria-live="polite">
+  <div class="map-country-head"><div class="map-country-flag" id="mapDetailFlag">🌐</div><div class="map-country-title"><h3 id="mapDetailName">اطلاعات کشور</h3><p id="mapDetailPlayer">وضعیت بازیکن</p></div><span class="map-status" id="mapDetailStatus">—</span></div>
+  <div class="map-country-grid" id="mapDetailStats"></div>
+  <div class="map-country-subhead">🏅 تجهیزات و توانمندی‌ها</div><div class="map-extra" id="mapDetailMilitary"></div>
+  <div class="map-country-subhead">📦 منابع و ذخایر</div><div class="map-extra" id="mapDetailResources"></div>
+  <div class="map-country-subhead">🏗️ پروژه‌های توسعه</div><div class="map-extra" id="mapDetailProjects"></div>
+ </div>
+ <section class="budget-table-panel" aria-label="جدول بودجه فعلی کشورها">
+  <div class="budget-table-head"><b>💰 اقتصاد واقعی ۱۰ کشور بازی</b><small>هزینه مصرفی دولت به دلار آمریکا • آخرین سال داده موجود</small></div>
+  <div class="budget-table-wrap"><table class="budget-table"><thead><tr><th>کشور</th><th>وضعیت</th><th>فرمانده</th><th>خزانه بازی</th><th>هزینه سالانه دولت واقعی</th></tr></thead><tbody id="countryBudgetRows"><tr><td colspan="5">پس از اتصال، خزانه بازی بارگذاری می‌شود؛ معیار اقتصادی واقعی مستقل است.</td></tr></tbody></table></div>
+  <div class="budget-table-foot"><span id="countryBudgetTotal">مجموع خزانه بازی: —</span><span>ارقام واقعی بر حسب میلیارد دلار آمریکا هستند.</span></div>
+ </section>
+</section>
+<section class="panel"><div class="sectionhead"><h2>وضعیت کشور</h2><small>اطلاعات زنده از پایگاه داده</small></div><div class="country"><div class="flag" id="myFlag">🌐</div><div><h2 id="myCountry">کشور من</h2><p id="myNickname">فرمانده</p></div><div class="rank">شناسه دور<br><b id="roundTag">—</b></div></div>
+<div class="stats">
+<div class="stat"><label>💰 خزانه (USD بازی)</label><strong id="budget">—</strong><em id="income">درآمد هر دور (USD): —</em></div>
+<div class="stat"><label>🛡️ ارتش</label><strong id="army">—</strong><em>امتیاز بازی</em></div>
+<div class="stat"><label>⚙️ فناوری</label><strong id="technology">—</strong><em>پژوهش</em></div>
+<div class="stat"><label>🤝 ثبات</label><strong id="stability">—</strong><em>شاخص کشور</em></div>
+</div><div class="health-box"><div class="health-head"><b>❤️ سلامت ملی</b><strong id="myHealthValue">۱۰۰٪</strong></div><div class="health-track"><i class="health-fill good" id="myHealthBar" style="width:100%"></i></div></div></section>
+<section class="panel economy-panel" id="economyPanel">
+ <div class="sectionhead"><h2>💰 اقتصاد و خزانه</h2><small>نمایش موجودی و تعرفه اقدامات بازی</small></div>
+ <div class="economy-top">
+  <div class="economy-balance"><small>موجودی خزانه</small><strong id="economyBudget">—</strong></div>
+  <div class="economy-balance"><small>درآمد هر دور</small><strong id="economyIncome">—</strong></div>
+ </div>
+ <div class="economy-grid">
+  <div class="economy-item"><b>عملیات هوایی</b><span>$5,000</span><small>تعرفه هر اقدام</small></div>
+  <div class="economy-item"><b>عملیات دریایی</b><span>$3,500</span><small>تعرفه هر اقدام</small></div>
+  <div class="economy-item"><b>عملیات سایبری</b><span>$2,500</span><small>تعرفه هر اقدام</small></div>
+  <div class="economy-item"><b>عملیات دفاعی</b><span>$2,000</span><small>تعرفه هر اقدام</small></div>
+  <div class="economy-item"><b>جاسوسی</b><span>$1,500</span><small>تعرفه هر اقدام</small></div>
+  <div class="economy-item"><b>مذاکره</b><span>$500</span><small>تعرفه هر درخواست</small></div>
+  <div class="economy-item"><b>پروژه توسعه</b><span>$10,000</span><small>تعرفه هر پروژه</small></div>
+  <div class="economy-item"><b>بمب هیدرولیک</b><span>رایگان</span><small>بدون کسر بودجه</small></div>
+ </div>
+ <div class="economy-grid" style="margin-top:8px">
+  <div class="economy-item"><b>سامانه پشتیبانی آذر</b><span>$100</span><small>هر واحد</small></div>
+  <div class="economy-item"><b>ناوگان پشتیبانی موج</b><span>$250</span><small>هر واحد</small></div>
+  <div class="economy-item"><b>ناوگان پروازی سپهر</b><span>$200</span><small>هر واحد</small></div>
+  <div class="economy-item"><b>شبکه لجستیک</b><span>$180</span><small>هر واحد</small></div>
+  <div class="economy-item"><b>سپر حفاظتی</b><span>$120</span><small>هر واحد</small></div>
+  <div class="economy-item"><b>فناوری دیجیتال</b><span>$300</span><small>هر واحد ارتقا</small></div>
+  <div class="economy-item"><b>خرید نفت</b><span>قیمت بازار</span><small>متغیر</small></div>
+  <div class="economy-item"><b>بازار جهانی</b><span>قیمت پیشنهاد</span><small>مبلغ معامله</small></div>
+ </div>
+ <div class="economy-preview"><span id="economyPreviewLabel">هزینه اقدام انتخاب‌شده</span><strong id="economyPreviewCost">—</strong></div>
+ <div class="economy-foot">این بخش نمایش تعرفه‌ها و برآورد هزینه است. مبلغ نهایی و کسر بودجه توسط توابع دیتابیس کنترل می‌شود.</div>
+</section>
+<section class="panel"><div class="sectionhead"><h2>مرکز تصمیم‌گیری</h2><small>اقدامات بازی</small></div>
+<div class="actiongrid">
+<button class="action" data-action="develop"><span class="ico">🏛️</span><b>توسعه اقتصاد</b><small>سرمایه‌گذاری ملی</small></button>
+<button class="action" data-action="research"><span class="ico">🔬</span><b>پژوهش فناوری</b><small>پیشرفت علمی</small></button>
+<button class="action" data-action="train"><span class="ico">🎖️</span><b>آموزش نیروها</b><small>افزایش آمادگی</small></button>
+<button class="action" data-action="defend"><span class="ico">🛡️</span><b>تقویت دفاع</b><small>افزایش پایداری</small></button>
+<button class="action" data-action="trade"><span class="ico">📦</span><b>توافق تجاری</b><small>همکاری اقتصادی</small></button>
+
+<button class="action" data-action="peace"><span class="ico">🕊️</span><b>پیشنهاد صلح</b><small>کاهش تنش بازی</small></button>
+<button class="action" data-action="spy"><span class="ico">🕵️</span><b>اطلاعات</b><small>امتیاز اطلاعاتی بازی</small></button>
+<button class="action" data-action="declare"><span class="ico">⚔️</span><b>رقابت نمادین</b><small>رویداد امتیازی بازی</small></button>
+</div>
+<div class="target"><label style="font-size:10px;color:var(--muted)">کشور هدف برای اقدامات دیپلماتیک</label><select id="targetCountry"><option value="">بدون هدف</option></select></div>
+<button class="endturn" id="endTurnBtn" disabled>✓ ثبت پایان نوبت</button>
+<div class="notice" id="actionMsg">ابتدا وارد اتاق شو. اقدامات پس از اتصال به سرور انجام می‌شوند.</div>
+</section>
+<section class="panel" id="militaryPanel"><div class="sectionhead"><h2>🏅 توانمندی‌های کشور</h2><small>خرید سامانه‌های شبیه‌سازی‌شده با بودجه بازی</small></div>
+<div class="row"><div class="field"><label>نوع تجهیزات</label><select id="militaryType"><option value="missiles">سامانه پشتیبانی آذر</option><option value="naval_ships">ناوگان پشتیبانی موج</option><option value="fighters">ناوگان پروازی سپهر</option><option value="tankers">شبکه لجستیک</option><option value="air_defense">سپر حفاظتی</option><option value="cyber_level">فناوری دیجیتال</option></select></div><div class="field"><label>تعداد</label><input id="militaryQty" type="number" min="1" max="100" value="1"></div></div>
+<button class="secondary" id="buyMilitaryBtn">خرید تجهیزات</button><div id="militaryInfo" class="notice">اطلاعات نیروها پس از ورود نمایش داده می‌شود.</div></section>
+<section class="panel hydraulic-panel" id="hydraulicBombPanel">
+ <div class="sectionhead"><h2>☢️ سامانه ویژه هیدرولیک</h2><small>تجهیزات ویژه بازی</small></div>
+ <div class="hydraulic-layout">
+  <div class="hydraulic-copy">
+   <div class="hydraulic-kicker">SPECIAL GAME ASSET • NO BUDGET FEE</div>
+   <div class="hydraulic-title">بمب هیدرولیک</div>
+   <p class="hydraulic-desc">یک آیتم ویژه و محدود در بازی. هر بار استفاده، ۸۰ واحد درصد از شاخص سلامت کشور هدف کم می‌کند؛ این مقدار در بازی به‌صورت ۱۰۰٪ به ۲۰٪ نمایش داده می‌شود.</p>
+   <div class="bomb-counter" id="hydraulicBombTokens" aria-label="موجودی بمب"><span class="bomb-token">✦</span><span class="bomb-token">✦</span><span class="bomb-token">✦</span><span class="bomb-count" id="hydraulicBombCount">۳ از ۳</span></div>
+   <div class="hydraulic-meta"><span>هزینه بودجه: رایگان</span><span>اثر بازی: ۸۰ واحد درصد</span><span>موجودی اولیه: ۳</span></div>
+  </div>
+  <div class="hydraulic-visual" aria-hidden="true">
+   <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 9 61 31 85 35 68 53 72 78 50 67 28 78 32 53 15 35 39 31 50 9Z" stroke="#f3c7a2" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="50" cy="48" r="13" stroke="#ffe3c7" stroke-width="3"/><path d="M50 39v18M41 48h18" stroke="#ffe3c7" stroke-width="3" stroke-linecap="round"/>
+    <path d="M18 83h64" stroke="#d98d88" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+   </svg>
+  </div>
+ </div>
+ <div class="hydraulic-controls">
+  <div class="field"><label for="hydraulicBombTarget">کشور هدف</label><select id="hydraulicBombTarget"><option value="">انتخاب کشور</option></select></div>
+  <button class="hydraulic-fire" id="useHydraulicBombBtn" disabled>✦ استفاده از بمب</button>
+ </div>
+ <div class="hydraulic-note" id="hydraulicBombInfo" role="status">پس از ورود به جهان، موجودی بمب‌ها و کشورهای قابل انتخاب نمایش داده می‌شود.</div>
+</section>
+<section class="panel" id="developmentPanel"><div class="sectionhead"><h2>🏗️ توسعه کشور</h2><small>پروژه‌های چنددوره‌ای</small></div>
+<div class="row"><div class="field"><label>نوع پروژه</label><select id="projectType"><option value="economy">اقتصاد</option><option value="technology">فناوری</option><option value="energy">انرژی</option><option value="industry">صنعت</option><option value="infrastructure">زیرساخت</option></select></div><button class="secondary" id="startProjectBtn">آغاز پروژه</button></div><div id="projectList" class="log"><div class="notice">هنوز پروژه‌ای ثبت نشده است.</div></div></section>
+<section class="panel" id="diplomacyPanel"><div class="sectionhead"><h2>🤝 دیپلماسی</h2><small>ارسال و پاسخ به درخواست‌ها</small></div>
+<div class="field"><label>کشور مقصد</label><select id="diplomacyTarget"><option value="">انتخاب کشور</option></select></div><div class="field"><label>نوع درخواست</label><select id="diplomacyType"><option value="negotiation">مذاکره</option><option value="trade">تجارت</option><option value="peace">صلح</option></select></div><div class="field"><label>پیام</label><input id="diplomacyMessage" maxlength="1000" placeholder="متن درخواست خود را بنویس"></div><button class="secondary" id="sendDiplomacyBtn">ارسال درخواست</button><div id="diplomacyList" class="log" style="margin-top:12px"></div></section>
+<section class="panel" id="operationsPanel"><div class="sectionhead"><h2>🛰️ عملیات بازی</h2><small>رویدادهای انتزاعی و امتیازی</small></div>
+<div class="field"><label>کشور هدف</label><select id="operationTarget"><option value="">انتخاب کشور</option></select></div><div class="row"><div class="field"><label>نوع عملیات</label><select id="operationType"><option value="air">هوایی</option><option value="naval">دریایی</option><option value="cyber">سایبری</option><option value="defense">دفاعی</option></select></div><div class="field"><label id="operationVariantLabel">سناریوی بازی</label><select id="operationVariant"></select></div><button class="secondary" id="registerOperationBtn">ثبت عملیات</button></div><div class="map-footnote" id="operationVariantNote">گزینه انتخابی هر عملیات همراه با نتیجه در تاریخچه جهان ذخیره می‌شود.</div>
+<div class="row"><div class="field"><label>هدف مأموریت اطلاعاتی</label><select id="espionageTarget"><option value="">انتخاب کشور</option></select></div><button class="secondary" id="espionageBtn">اجرای مأموریت</button></div><div id="operationInfo" class="notice">نتایج عملیات بازی در این بخش نمایش داده می‌شود.</div></section>
+<section class="panel" id="marketPanel"><div class="sectionhead"><h2>🌐 بازار جهانی</h2><small>خریدوفروش منابع میان کشورها</small></div>
+<div class="row"><div class="field"><label>منبع برای فروش</label><select id="offerResource"><option value="oil">نفت</option><option value="fuel">سوخت</option><option value="food">غذا</option><option value="metal">فلز</option><option value="equipment">تجهیزات</option></select></div><div class="field"><label>مقدار</label><input id="offerQty" type="number" min="1" max="100000" value="10"></div></div>
+<div class="row"><div class="field"><label>قیمت هر واحد</label><input id="offerPrice" type="number" min="1" max="1000000" value="10"></div><div class="field"><label>مدت اعتبار (دور)</label><input id="offerDuration" type="number" min="1" max="20" value="3"></div></div><button class="secondary" id="createOfferBtn">ثبت پیشنهاد فروش</button>
+<h3 style="font-size:12px;margin:18px 0 8px">موجودی منابع من</h3><div id="resourceList" class="row"></div><h3 style="font-size:12px;margin:18px 0 8px">پیشنهادهای فعال بازار</h3><div id="offerList" class="log"></div><h3 style="font-size:12px;margin:18px 0 8px">آخرین معاملات</h3><div id="transactionList" class="log"></div></section>
+<section class="panel" id="notificationsPanel"><div class="sectionhead"><h2>🔔 صندوق اعلان‌ها</h2><small>پیام‌ها و اتفاقات کشور</small></div><div id="notificationList" class="log"></div></section>
+<section class="panel"><div class="sectionhead"><h2>گزارش‌های اخیر</h2><small>رویدادهای ثبت‌شده</small></div><div class="log" id="events"><div class="event"><i class="dot"></i><p>هنوز رویدادی ثبت نشده است.</p></div></div></section>
+</main><aside class="sidecol">
+<section class="panel"><button class="daily-trigger" id="dailyReportOpen"><span>📰 اخبار جهان<small>تمام رویدادهای ثبت‌شده برای همه کشورها</small></span><b>مشاهده</b></button></section>
+<section class="panel"><div class="sectionhead"><h2>وضعیت نوبت‌ها</h2><small>پیشرفت دور</small></div><div style="display:flex;align-items:baseline;gap:7px"><strong style="font-size:27px;color:var(--gold)" id="submittedCount">۰</strong><span style="color:var(--muted);font-size:11px" id="playerCount">از ۰ بازیکن آماده</span></div><div class="progress"><i id="turnProgress" style="width:0%"></i></div><div class="turnrow"><span id="progressPct">۰٪ تکمیل شده</span><span id="remaining">—</span></div><div style="margin-top:13px"><button class="goldbtn hidden" id="startBtn">▶ شروع بازی</button></div><div class="notice" id="turnMsg">در انتظار شروع بازی</div></section>
+<section class="panel leaderboard-panel" id="leaderboardPanel">
+ <div class="sectionhead"><div><h2>🏆 لیدربرد فرماندهان</h2><small class="leaderboard-sub">۱۰ بازیکن برتر این جهان • رتبه‌بندی زنده</small></div><span class="pill live" id="leaderboardLive">LIVE</span></div>
+ <div class="leaderboard-list" id="leaderboardList"><div class="leaderboard-empty">پس از ورود به جهان، رتبه‌بندی نمایش داده می‌شود.</div></div>
+ <div class="leaderboard-foot">امتیاز: ۶۰٪ عملکرد حملات ثبت‌شده + ۴۰٪ سلامت ملی. با ورود بازیکن جدید یا تغییر آمار، رتبه‌ها دوباره محاسبه می‌شوند.</div>
+</section>
+<section class="panel"><div class="sectionhead"><h2>کشورهای حاضر</h2><small>بازیکنان اتاق</small></div><div class="players" id="players"><div class="notice">هنوز بازیکنی وارد نشده است.</div></div></section>
+<section class="panel"><div class="sectionhead"><h2>گفت‌وگوی اتاق</h2><small>پیام زنده</small></div><div class="chatlist" id="chatList"></div><div class="row" style="margin-top:10px"><input id="chatInput" placeholder="پیام بنویس..." style="min-width:0;flex:3;background:#0b1525;color:white;border:1px solid #344965;border-radius:11px;padding:10px"><button class="secondary" id="sendChat">ارسال</button></div></section>
+</aside></div></div>
+<div class="daily-modal" id="dailyReportModal" role="dialog" aria-modal="true" aria-labelledby="dailyReportTitle">
+ <div class="daily-dialog"><div class="daily-head"><h2 id="dailyReportTitle">📰 اخبار کامل جهان</h2><button class="secondary" id="dailyReportClose">بستن ✕</button></div>
+ <div class="daily-controls"><span style="font-size:11px;color:#b9c7d8">همه اخبار و رویدادهای تمام دورها</span><button class="goldbtn" id="dailyLoadBtn">به‌روزرسانی اخبار</button></div>
+ <div id="dailyReportStatus" class="notice">در حال آماده‌سازی اخبار جهان...</div><div id="dailyReportEvents"></div>
+ </div></div>
+<div class="footer">WORLD DOMINATION • V21 • لیدربرد زنده و اقتصاد واقعی</div></div>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const countries = {
+ A:{n:'ایران',f:'🇮🇷',realSpendB:48.20550664,realYear:2025},B:{n:'آلمان',f:'🇩🇪',realSpendB:1137.20712,realYear:2025},C:{n:'فرانسه',f:'🇫🇷',realSpendB:820.11374,realYear:2025},D:{n:'ترکیه',f:'🇹🇷',realSpendB:221.43961,realYear:2025},E:{n:'بریتانیا',f:'🇬🇧',realSpendB:849.5604,realYear:2025},
+ F:{n:'ایتالیا',f:'🇮🇹',realSpendB:465.67848,realYear:2025},G:{n:'اسپانیا',f:'🇪🇸',realSpendB:366.08064,realYear:2025},I:{n:'عربستان',f:'🇸🇦',realSpendB:264.36,realYear:2024},J:{n:'مصر',f:'🇪🇬',realSpendB:19.88980452,realYear:2025},K:{n:'امارات',f:'🇦🇪',realSpendB:63.85078,realYear:2023}
+};
+const numberToCode={1:'A',2:'B',3:'C',4:'D',5:'E',6:'F',7:'G',8:'I',9:'J',10:'K'};
+let sb=null,user=null,room=null,myPlayer=null,myState=null,turn=null,submitted=false,channel=null,refreshing=false,playerCache=[],marketCache=null,systemsCache=null;
+let mapStateCache=[],mapHealthCache=[],selectedMapCountry=null;
+const fmt=n => Number(n??0).toLocaleString('fa-IR');
+const fmtUSD=n => '$'+Number(n??0).toLocaleString('en-US',{maximumFractionDigits:0});
+function msg(el,text,type=''){el.textContent=text;el.className='notice'+(type?' '+type:'')}
+function setConnection(t,ok=false){$('connection').textContent=(ok?'● ':'○ ')+t;$('connection').style.color=ok?'var(--green)':'var(--gold)'}
+function countryCode(c){return countries[c]||{n:c||'نامشخص',f:'🌐'}}
+let mapPositions={A:[590,535],B:[500,425],C:[465,450],D:[570,475],E:[450,405],F:[525,485],G:[425,495],I:[610,590],J:[545,570],K:[650,555]};
+const mapIsoToCode={'364':'A','276':'B','250':'C','792':'D','826':'E','380':'F','724':'G','682':'I','818':'J','784':'K'};
+
+let accurateMapReady=false,mapZoomBehavior=null;
+let globeProjection=null,globePath=null,globeFeatures=[],globeRotation=[-32,-12,0],globeScale=390;
+let globeDrag=null,globeDragMoved=false,globeRedrawFrame=0;
+// Cache country centroids once: geoCentroid/find were previously repeated on every drag frame.
+const globeCountryCentroids={};
+let globeFrameSamples=[],globeLastDrawMs=0,globeQuality='high',globeLastFps=60;
+function updateGlobeMarkerPositions(){
+ document.querySelectorAll('#mapMarkers .map-marker[data-country]').forEach(marker=>{
+  const pos=mapPositions[marker.dataset.country];
+  marker.style.display=pos&&Number.isFinite(pos[0])&&Number.isFinite(pos[1])?'':'none';
+  if(pos&&Number.isFinite(pos[0])&&Number.isFinite(pos[1]))marker.setAttribute('transform',`translate(${pos[0]} ${pos[1]})`);
+ });
+}
+function redrawOrthographicGlobe(){
+ if(!accurateMapReady||!globeProjection||!globePath)return;
+ const started=performance.now();
+ globeProjection.rotate(globeRotation).scale(globeScale);
+ const viewport=d3.select('#worldMapSvg').select('#mapViewport');
+ viewport.select('.graticule path').attr('d',globePath);
+ viewport.select('#countryShapes').selectAll('path').attr('d',globePath);
+ // Only update the ten game-country markers; do not rebuild the whole map, budget table or KPI cards.
+ Object.entries(mapIsoToCode).forEach(([iso,code])=>{
+  const center=globeCountryCentroids[iso];
+  const point=center?globeProjection(center):null;
+  mapPositions[code]=point&&point.every(Number.isFinite)?point:null;
+ });
+ updateGlobeMarkerPositions();
+ globeLastDrawMs=performance.now()-started;
+}
+function scheduleGlobeRedraw(){
+ if(globeRedrawFrame)return;
+ globeRedrawFrame=requestAnimationFrame(timestamp=>{
+  globeRedrawFrame=0;
+  globeFrameSamples.push(timestamp);
+  while(globeFrameSamples.length&&timestamp-globeFrameSamples[0]>1200)globeFrameSamples.shift();
+  if(globeFrameSamples.length>2)globeLastFps=Math.round((globeFrameSamples.length-1)*1000/(globeFrameSamples.at(-1)-globeFrameSamples[0]));
+  const nextQuality=globeLastFps<28?'low':globeLastFps<45?'medium':'high';
+  if(nextQuality!==globeQuality){
+   globeQuality=nextQuality;
+   if(!globeDrag)globeProjection.precision(nextQuality==='low'?2.8:nextQuality==='medium'?1.8:.8);
+  }
+  redrawOrthographicGlobe();
+ });
+}
+async function loadAccurateMap(){
+ try{
+  if(!window.d3||!window.topojson)throw Error('کتابخانه نقشه بارگذاری نشد');
+  const world=await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+  globeFeatures=topojson.feature(world,world.objects.countries).features;
+  globeFeatures.forEach(feature=>{const iso=String(feature.id);if(mapIsoToCode[iso])globeCountryCentroids[iso]=d3.geoCentroid(feature);});
+  const svg=d3.select('#worldMapSvg'),viewport=svg.select('#mapViewport');
+  const shapes=viewport.select('#countryShapes');shapes.selectAll('*').remove();
+  viewport.select('.continents').style('display','none');
+  viewport.select('.graticule').selectAll('*').remove();
+  globeProjection=d3.geoOrthographic().translate([500,500]).scale(globeScale).rotate(globeRotation).clipAngle(90).precision(.8);
+  globePath=d3.geoPath(globeProjection);
+  viewport.select('.graticule').append('path').datum(d3.geoGraticule10()).attr('d',globePath);
+  shapes.selectAll('path').data(globeFeatures).join('path')
+   .attr('data-iso',d=>String(d.id))
+   .attr('d',globePath)
+   .attr('fill',d=>mapIsoToCode[String(d.id)]?'#35516d':'#1b2e45')
+   .on('click',(event,d)=>{
+    if(globeDragMoved){event.preventDefault();event.stopPropagation();globeDragMoved=false;return;}
+    const code=mapIsoToCode[String(d.id)];
+    if(code)selectMapCountry(code);
+    else $('mapHint').textContent='این کشور در فهرست کشورهای قابل‌بازی فعلی نیست.';
+   });
+  accurateMapReady=true;
+  // Drag rotates the globe only; the surrounding page remains stationary.
+  const node=$('worldMapSvg');
+  node.style.touchAction='none';
+  node.setAttribute('aria-label','کره جغرافیایی چرخان؛ کیفیت نمایش به‌صورت خودکار با توان دستگاه تنظیم می‌شود');
+  node.addEventListener('pointerdown',event=>{
+   if(event.button!==undefined&&event.button!==0)return;
+   globeDrag={x:event.clientX,y:event.clientY,rotation:[...globeRotation],pointerId:event.pointerId};
+   node.classList.add('globe-is-dragging');
+   if(globeProjection)globeProjection.precision(4.5);
+   globeDragMoved=false;
+   try{node.setPointerCapture(event.pointerId)}catch(_){}
+  });
+  node.addEventListener('pointermove',event=>{
+   if(!globeDrag||globeDrag.pointerId!==event.pointerId)return;
+   const dx=event.clientX-globeDrag.x,dy=event.clientY-globeDrag.y;
+   if(Math.abs(dx)+Math.abs(dy)>5)globeDragMoved=true;
+   if(!globeDragMoved)return;
+   globeRotation=[globeDrag.rotation[0]+dx*.34,Math.max(-85,Math.min(85,globeDrag.rotation[1]-dy*.34)),0];
+   scheduleGlobeRedraw();
+  });
+  const stopDrag=event=>{
+   if(globeDrag&&globeDrag.pointerId===event.pointerId){
+    const moved=globeDragMoved;globeDrag=null;
+    node.classList.remove('globe-is-dragging');
+    if(globeProjection)globeProjection.precision(globeQuality==='low'?2.8:globeQuality==='medium'?1.8:.8);
+    redrawOrthographicGlobe();
+    if(moved)setTimeout(()=>{globeDragMoved=false},80);
+   }
+  };
+  node.addEventListener('pointerup',stopDrag);
+  node.addEventListener('pointercancel',stopDrag);
+  $('mapZoomIn').onclick=()=>{globeScale=Math.min(520,globeScale*1.18);redrawOrthographicGlobe()};
+  $('mapZoomOut').onclick=()=>{globeScale=Math.max(270,globeScale/1.18);redrawOrthographicGlobe()};
+  $('mapZoomReset').onclick=()=>{globeRotation=[-32,-12,0];globeScale=390;redrawOrthographicGlobe()};
+  mapZoomBehavior=null;
+  redrawOrthographicGlobe();
+ }catch(e){console.warn('Accurate globe unavailable:',e);$('mapHint').textContent='کره جغرافیایی بارگذاری نشد؛ نمایش نقشه پشتیبان فعال است.'}
+}
+function mapPlayerFor(code){return playerCache.find(p=>p.country===code)||null;}
+function mapStateFor(player){return player?mapStateCache.find(x=>x.user_id===player.user_id)||null:null;}
+function mapHealthFor(player){return player?Math.max(0,Math.min(100,Number(mapHealthCache.find(x=>x.user_id===player.user_id)?.health??100))):null;}
+function renderCountryBudgetTable(){
+ const body=$('countryBudgetRows');if(!body)return;body.innerHTML='';
+ let total=0,activeCount=0;
+ Object.entries(countries).forEach(([code,c])=>{
+  const player=mapPlayerFor(code),state=mapStateFor(player),tr=document.createElement('tr');
+  if(player?.user_id===user?.id)tr.classList.add('mine-row');
+  const values=[c.f+' '+c.n,player?'فعال':'آزاد',player?(player.nickname||'بازیکن'):'—',player&&state?fmtUSD(state.budget):'—','$'+Number(c.realSpendB).toLocaleString('en-US',{maximumFractionDigits:2})+' میلیارد • '+c.realYear];
+  values.forEach((value,index)=>{const td=document.createElement('td');td.textContent=value;
+   if(index===3){td.className=player&&state?'money':'free-cell';if(player&&state){total+=Number(state.budget||0);activeCount++;}}
+   if(index===1&&!player)td.className='free-cell';
+   if(index===4)td.className='real-economy-cell';
+   tr.append(td);
+  });
+  body.append(tr);
+ });
+ $('countryBudgetTotal').textContent='مجموع خزانه بازی: '+fmtUSD(total)+' • '+fmt(activeCount)+' کشور دارای بودجه ثبت‌شده';
+}
+function renderMapSummary(){
+ const active=playerCache.length,free=Math.max(0,Object.keys(countries).length-active);
+ const budget=mapStateCache.filter(x=>playerCache.some(p=>p.user_id===x.user_id)).reduce((sum,x)=>sum+Number(x.budget||0),0);
+ const healths=playerCache.map(p=>mapHealthFor(p)).filter(x=>x!==null);
+ $('mapKpiPlayers').textContent=fmt(active);$('mapKpiFree').textContent=fmt(free);$('mapKpiBudget').textContent=fmtUSD(budget);
+ $('mapKpiHealth').textContent=healths.length?fmt(Math.round(healths.reduce((a,b)=>a+b,0)/healths.length))+'٪':'—';
+ renderCountryBudgetTable();
+}
+function renderStrategicMap(){
+ const layer=$('mapMarkers');if(!layer)return;layer.innerHTML='';
+ const own=myPlayer?.country;
+ if(accurateMapReady){
+  document.querySelectorAll('#countryShapes path').forEach(path=>{
+   const code=mapIsoToCode[path.dataset.iso],player=code?mapPlayerFor(code):null;
+   path.setAttribute('fill',code===own?'url(#countryOwn)':player?'url(#countryOccupied)':code?'url(#countryFree)':'#263d55');
+   path.setAttribute('stroke',player?'#a8f5f4':code?'#8ce7b6':'#789bb5');
+   path.setAttribute('stroke-width',player?'1.65':code?'1.25':'.7');
+   path.setAttribute('opacity',code?'1':'.9');
+   path.setAttribute('filter',code?'url(#landShadow)':'none');
+   path.classList.toggle('map-country-selected',code===selectedMapCountry);
+  });
+ }
+ const filter=$('mapCountryFilter')?.value||'all',term=($('mapCountrySearch')?.value||'').trim().toLocaleLowerCase('fa');
+ Object.entries(countries).forEach(([code,c])=>{
+  const player=mapPlayerFor(code),isOwn=code===own,isFree=!player;
+  const matchFilter=filter==='all'||(filter==='occupied'&&!!player)||(filter==='free'&&isFree)||(filter==='mine'&&isOwn);
+  const matchTerm=!term||c.n.toLocaleLowerCase('fa').includes(term)||code.toLowerCase().includes(term)||(player?.nickname||'').toLocaleLowerCase('fa').includes(term);
+  if(!matchFilter||!matchTerm)return;
+  const pos=mapPositions[code];if(!pos||!Number.isFinite(pos[0])||!Number.isFinite(pos[1]))return;
+  const labelOffsets={
+   A:[72,18], B:[-58,-54], C:[-78,2], D:[68,-10], E:[-64,-62],
+   F:[62,20], G:[-72,42], I:[72,38], J:[-58,46], K:[78,-30]
+  };
+  const [dx,dy]=labelOffsets[code]||[48,-38];
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('class','map-marker '+(isOwn?'own':player?'occupied':'free')+(selectedMapCountry===code?' selected':''));
+  g.dataset.country=code;
+  g.setAttribute('transform',`translate(${pos[0]} ${pos[1]})`);g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label',c.n+'، '+(player?'دارای بازیکن':'آزاد'));
+  const leader=document.createElementNS('http://www.w3.org/2000/svg','path');
+  leader.setAttribute('class','marker-leader');leader.setAttribute('d',`M0 0 L${dx*.72} ${dy*.72}`);
+  const labelGroup=document.createElementNS('http://www.w3.org/2000/svg','g');
+  labelGroup.setAttribute('class','marker-label');labelGroup.setAttribute('transform',`translate(${dx} ${dy})`);
+  const width=Math.max(112,Array.from(c.n).length*25+64);
+  const pill=document.createElementNS('http://www.w3.org/2000/svg','rect');pill.setAttribute('class','marker-pill');pill.setAttribute('x',String(-width/2));pill.setAttribute('y','-31');pill.setAttribute('width',String(width));pill.setAttribute('height','62');pill.setAttribute('rx','31');
+  const label=document.createElementNS('http://www.w3.org/2000/svg','text');label.setAttribute('x','0');label.setAttribute('y','9');label.setAttribute('text-anchor','middle');label.textContent=c.f+' '+c.n;
+  labelGroup.append(pill,label);g.append(leader,labelGroup);
+  g.addEventListener('click',()=>{if(globeDragMoved){globeDragMoved=false;return;}selectMapCountry(code)});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectMapCountry(code)}});layer.append(g);
+ });
+ renderMapSummary();
+ if(!selectedMapCountry)$('mapHint').textContent=own?'کشور شما: '+countryCode(own).n+' • برای اطلاعات کامل روی هر کشور کلیک کن.':'برای دیدن اطلاعات، روی هر کشور کلیک کن.';
+}
+function fillMapTags(id,items,empty){const el=$(id);el.innerHTML='';if(!items.length){const span=document.createElement('span');span.className='map-empty';span.textContent=empty;el.append(span);return;}items.forEach(value=>{const span=document.createElement('span');span.textContent=value;el.append(span);});}
+function selectMapCountry(code){
+ const c=countryCode(code),p=mapPlayerFor(code),state=mapStateFor(p),health=mapHealthFor(p),card=$('mapCountryCard');
+ selectedMapCountry=code;
+ document.querySelectorAll('.map-marker').forEach(m=>m.classList.remove('selected'));
+ if(accurateMapReady)document.querySelectorAll('#countryShapes path').forEach(path=>path.classList.toggle('map-country-selected',mapIsoToCode[path.dataset.iso]===code));
+ const pos=mapPositions[code];if(pos){const marker=Array.from($('mapMarkers').children).find(g=>g.getAttribute('transform')===`translate(${pos[0]} ${pos[1]})`);if(marker)marker.classList.add('selected');}
+ $('mapDetailFlag').textContent=c.f;$('mapDetailName').textContent=c.n;
+ $('mapDetailPlayer').textContent=p?'نام بازیکن / فرمانده: '+(p.nickname||'بازیکن')+(p.user_id===user?.id?' • کشور شما':''):'این کشور هنوز بازیکنی ندارد.';
+ const status=$('mapDetailStatus');status.textContent=p?(p.user_id===user?.id?'کشور شما':'دارای بازیکن'):'آزاد برای ثبت‌نام';status.className='map-status '+(p?(p.user_id===user?.id?'mine':''):'free');
+ const stats=[
+  ['💰 بودجه',p?fmtUSD(state?.budget):'—'],['📈 درآمد هر دور',p?fmtUSD(state?.income):'—'],['❤️ سلامت',p?fmt(health)+'٪':'—'],
+  ['🛡️ ارتش',p?fmt(state?.army):'—'],['✈️ توان هوایی',p?fmt(state?.air_power):'—'],['🚢 توان دریایی',p?fmt(state?.naval_power):'—'],
+  ['🗺️ توان زمینی',p?fmt(state?.land_power):'—'],['⚙️ فناوری',p?fmt(state?.technology):'—'],['🤝 ثبات',p?fmt(state?.stability):'—'],
+  ['🧠 اطلاعات',p?fmt(state?.intelligence):'—'],['⚡ انرژی',p?fmt(state?.energy):'—'],['🏦 درآمد مالیاتی',p?fmtUSD(state?.tax_income):'—'],
+  ['📊 درآمد تجاری',p?fmtUSD(state?.trade_income):'—'],['🏛️ هزینه سالانه واقعی دولت','$'+Number(c.realSpendB).toLocaleString('en-US',{maximumFractionDigits:2})+' میلیارد • '+c.realYear],['🪙 شناسه کشور',code],['🎮 وضعیت',p?'فعال':'آزاد'],['👤 نام بازیکن / فرمانده',p?(p.nickname||'بازیکن'):'ندارد']
+ ];
+ const statBox=$('mapDetailStats');statBox.innerHTML='';stats.forEach(([label,value])=>{const item=document.createElement('div');item.className='map-country-stat';const small=document.createElement('small');small.textContent=label;const b=document.createElement('b');b.textContent=value;item.append(small,b);statBox.append(item)});
+ const military=(systemsCache?.military||[]).find(x=>p&&x.user_id===p.user_id);
+ const militaryItems=military?Object.entries(equipmentNames).map(([key,label])=>label+': '+fmt(military[key]??0)).concat(['بمب هیدرولیک: '+fmt(military.hydraulic_bombs??0)]):[];
+ fillMapTags('mapDetailMilitary',militaryItems,p?'اطلاعات تجهیزات برای این کشور ثبت نشده است.':'کشور هنوز بازیکن و تجهیزات ندارد.');
+ const resources=(systemsCache?.resources||[]).filter(x=>p&&x.user_id===p.user_id).map(x=>(resourceNames[x.resource_type]||x.resource_type)+': '+fmt(x.quantity));
+ fillMapTags('mapDetailResources',resources,p?'منبع ثبت‌شده‌ای ندارد.':'کشور آزاد است.');
+ const projects=(systemsCache?.projects||[]).filter(x=>p&&x.user_id===p.user_id).map(x=>(x.title||projectNames[x.project_type]||x.project_type)+' • '+(x.status==='completed'?'تکمیل‌شده':'در حال اجرا')+' • '+fmt(x.rounds_done)+'/'+fmt(x.total_rounds));
+ fillMapTags('mapDetailProjects',projects,p?'پروژه فعالی ندارد.':'کشور آزاد است.');
+ card.classList.add('open');$('mapHint').textContent='کشور انتخاب‌شده: '+c.n+' • '+(p?(p.nickname||'بازیکن'):'آزاد');
+ if(p){['operationTarget','diplomacyTarget','espionageTarget','targetCountry','hydraulicBombTarget'].forEach(id=>{const el=$(id);if(el&&Array.from(el.options).some(o=>o.value===(id==='targetCountry'?code:p.user_id)))el.value=id==='targetCountry'?code:p.user_id;});}
+}
+function animateMapEvent(fromCode,toCode,kind='operation'){
+ const layer=$('mapRoutes'),a=mapPositions[fromCode],b=mapPositions[toCode];if(!layer||!a||!b)return;
+ layer.innerHTML='';const ns='http://www.w3.org/2000/svg';const dx=b[0]-a[0],dy=b[1]-a[1],cx=(a[0]+b[0])/2,cy=(a[1]+b[1])/2-Math.min(95,Math.abs(dx)*.12+35);
+ const path=document.createElementNS(ns,'path');path.setAttribute('class','map-route');path.setAttribute('d',`M ${a[0]} ${a[1]} Q ${cx} ${cy} ${b[0]} ${b[1]}`);layer.append(path);
+ const orb=document.createElementNS(ns,'circle');orb.setAttribute('r','6');orb.setAttribute('fill','#ffe0a0');orb.setAttribute('filter','url(#mapGlow)');const motion=document.createElementNS(ns,'animateMotion');motion.setAttribute('dur','2.4s');motion.setAttribute('fill','freeze');motion.setAttribute('path',`M ${a[0]} ${a[1]} Q ${cx} ${cy} ${b[0]} ${b[1]}`);orb.append(motion);layer.append(orb);
+ const impact=document.createElementNS(ns,'circle');impact.setAttribute('class','map-impact');impact.setAttribute('cx',b[0]);impact.setAttribute('cy',b[1]);impact.setAttribute('r','5');layer.append(impact);
+ const toast=$('mapEventToast');toast.textContent='رویداد بازی: '+countryCode(fromCode).n+' ← '+countryCode(toCode).n;toast.classList.remove('show');void toast.offsetWidth;toast.classList.add('show');
+ $('mapHint').textContent='رویداد نمایشی ثبت شد • '+countryCode(fromCode).n+' به '+countryCode(toCode).n;
+ setTimeout(()=>{path.remove();orb.remove();impact.remove()},5000);
+}
+const operationVariants={
+ air:[['sky_support','پشتیبانی هوایی سپهر'],['air_patrol','گشت آسمانی آرمان'],['relief_air','شبکه امداد هوایی'] ],
+ naval:[['coastal_watch','گشت ساحلی آبی'],['sea_support','ناوگان پشتیبانی دریا'],['marine_monitor','پایش دریایی موج'] ],
+ cyber:[['communications','شبکه ارتباطات کشور'],['public_services','سامانه خدمات عمومی'],['energy_grid','زیرساخت انرژی'] ],
+ defense:[['city_shield','سپر حفاظتی شهری'],['early_warning','شبکه هشدار زودهنگام'],['infrastructure_guard','محافظ زیرساخت'] ]
+};
+function updateOperationVariants(){
+ const type=$('operationType')?.value||'air',select=$('operationVariant');if(!select)return;
+ const labels={air:'گزینه پشتیبانی',naval:'سناریوی دریایی',cyber:'حوزه شبیه‌سازی',defense:'نوع سپر دفاعی'};
+ $('operationVariantLabel').textContent=labels[type]||'سناریوی بازی';select.innerHTML='';
+ (operationVariants[type]||[]).forEach(([value,label])=>{const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o)});
+}
+const GLOBAL_ROOM_CODE='WORLD2026';
+async function connect(){
+ try{
+  const url=$('supUrl').value.trim(),key=$('supKey').value.trim();
+  if(!url||!key)throw Error('آدرس و Publishable Key را وارد کن.');
+  sb=window.supabase.createClient(url,key);
+  const {data,error}=await sb.auth.getSession();if(error)throw error;
+  if(data.session)user=data.session.user;
+  else {const r=await sb.auth.signInAnonymously();if(r.error)throw r.error;user=r.data.user;}
+  $('authLabel').textContent='ورود موفق • '+user.id.slice(0,8);
+  $('enterWorldBtn').disabled=false;
+  setConnection('متصل به سرور',true);
+  // تلاش برای بازیابی کشور قبلی همین حساب، پیش از نمایش انتخاب کشور
+  const restored = await restoreExistingPlayer();
+  if (restored) {
+   msg($('setupMsg'),'حساب قبلی شناسایی شد؛ کشور و وضعیت بازی شما بازیابی شد.','ok');
+   return;
+  }
+  await loadAvailableCountries();
+  msg($('setupMsg'),'اتصال موفق بود. نامت را بنویس، یک کشور آزاد انتخاب کن و وارد جهان شو.','ok');
+ }catch(e){setConnection('خطا در اتصال');msg($('setupMsg'),e.message||String(e),'error')}
+}
+async function restoreExistingPlayer(){
+ try{
+  const {data:rooms,error:rErr}=await sb.from('rooms').select('*').eq('room_code',GLOBAL_ROOM_CODE).limit(1);
+  if(rErr)throw rErr;
+  const existingRoom=rooms?.[0];
+  if(!existingRoom)return false;
+  const {data:rows,error:pErr}=await sb.from('players').select('*').eq('room_id',existingRoom.id).eq('user_id',user.id).limit(1);
+  if(pErr)throw pErr;
+  if(!rows?.length)return false;
+  room=existingRoom;
+  myPlayer=rows[0];
+  $('setupPanel').classList.add('hidden');
+  $('gameArea').classList.remove('hidden');
+  $('roomBadge').textContent='جهان مشترک';
+  $('myCountry').textContent=countryCode(myPlayer.country).n;
+  $('myFlag').textContent=countryCode(myPlayer.country).f;
+  $('myNickname').textContent=myPlayer.nickname||'فرمانده';
+  await loadAll();
+  subscribe();
+  return true;
+ }catch(e){
+  msg($('setupMsg'),'بازیابی حساب قبلی ناموفق بود: '+(e.message||e),'error');
+  throw e;
+ }
+}
+async function loadAvailableCountries(){
+ try{
+  const {data:rooms,error:rErr}=await sb.from('rooms').select('id,status').eq('room_code',GLOBAL_ROOM_CODE).limit(1);
+  if(rErr)throw rErr;
+  let globalRoom=rooms?.[0];
+  if(!globalRoom){
+   const {data,error}=await sb.from('rooms').insert({room_code:GLOBAL_ROOM_CODE,created_by:user.id,status:'waiting'}).select('id,status').single();
+   if(error){const retry=await sb.from('rooms').select('id,status').eq('room_code',GLOBAL_ROOM_CODE).single();if(retry.error)throw error;globalRoom=retry.data;}else globalRoom=data;
+  }
+  // وضعیت waiting مانع نمایش کشورهای آزاد نیست؛ تابع امن سمت سرور ظرفیت و قوانین ورود را کنترل می‌کند.
+  const {data:players,error}=await sb.from('players').select('country').eq('room_id',globalRoom.id);
+  if(error)throw error;
+  const occupied=new Set((players||[]).map(x=>x.country));
+  const select=$('countryChoice');select.innerHTML='';
+  const free=Object.entries(countries).filter(([code])=>!occupied.has(code));
+  free.forEach(([code,c])=>{const n=Object.keys(numberToCode).find(k=>numberToCode[k]===code);const op=document.createElement('option');op.value=n;op.textContent=c.f+' '+c.n;select.append(op)});
+  const chips=$('availableCountries');chips.innerHTML='';
+  free.forEach(([code,c])=>{const span=document.createElement('span');span.className='pill';span.textContent=c.f+' '+c.n;chips.append(span)});
+  if(!free.length){chips.textContent='تمام کشورها انتخاب شده‌اند.';select.disabled=true;$('enterWorldBtn').disabled=true;}
+  else{select.disabled=false;$('enterWorldBtn').disabled=false;select.value=Object.keys(numberToCode).find(k=>numberToCode[k]===free[0][0]);}
+  return globalRoom;
+ }catch(e){msg($('setupMsg'),'دریافت کشورهای آزاد ناموفق بود: '+(e.message||e),'error');throw e}
+}
+async function joinGlobalWorld(){
+ try{
+  if(!sb||!user)throw Error('ابتدا اتصال را انجام بده.');
+  const nickname=$('nickname').value.trim();if(!nickname)throw Error('ابتدا نام بازیکن را وارد کن.');
+  const globalRoom=await loadAvailableCountries();
+  const num=Number($('countryChoice').value);
+  if(!num)throw Error('یک کشور آزاد انتخاب کن.');
+  const {data,error}=await sb.rpc('join_global_world',{p_country_number:num,p_nickname:nickname});
+  if(error)throw error;
+  const result=Array.isArray(data)?data[0]:data;
+  const roomId=result?.room_id||result?.id||globalRoom.id;
+  const {data:roomData,error:roomErr}=await sb.from('rooms').select('*').eq('id',roomId).single();
+  if(roomErr)throw roomErr;
+  room=roomData;
+  const {data:playerRows,error:pErr}=await sb.from('players').select('*').eq('room_id',room.id).eq('user_id',user.id).limit(1);
+  if(pErr)throw pErr;
+  myPlayer=playerRows?.[0]||{country:result.country,nickname:nickname,user_id:user.id};
+  $('setupPanel').classList.add('hidden');$('gameArea').classList.remove('hidden');
+  $('roomBadge').textContent='جهان مشترک';
+  $('myCountry').textContent=countryCode(myPlayer.country).n;$('myFlag').textContent=countryCode(myPlayer.country).f;$('myNickname').textContent=myPlayer.nickname||nickname;
+  await loadAll();subscribe();
+ }catch(e){msg($('setupMsg'),'ورود به جهان ناموفق بود: '+(e.message||e),'error');try{await loadAvailableCountries()}catch(_){}}
+}
+async function loadAll(){
+ if(!room||refreshing)return;refreshing=true;
+ try{
+  const [pr,sr,er,mr,tr,subr,hr]=await Promise.all([
+   sb.from('players').select('*').eq('room_id',room.id),
+   sb.from('game_states').select('*').eq('room_id',room.id),
+   sb.from('game_events').select('*').eq('room_id',room.id).order('created_at',{ascending:false}).limit(15),
+   sb.from('messages').select('*').eq('room_id',room.id).order('created_at',{ascending:true}).limit(40),
+   sb.from('room_turns').select('*').eq('room_id',room.id).maybeSingle(),
+   sb.from('turn_submissions').select('*').eq('room_id',room.id),
+   sb.from('world_country_health').select('user_id,health').eq('room_id',room.id)
+  ]);
+  for(const r of [pr,sr,er,mr,tr,subr,hr])if(r.error)throw r.error;
+  const players=pr.data||[],states=sr.data||[],healthRows=hr.data||[];
+  // صفرشدن سلامت یعنی خروج کامل بازیکن از بازی؛ پاکسازی دیتابیس در تریگر سرور انجام می‌شود.
+  const ownHealth=Number(healthRows.find(h=>h.user_id===user.id)?.health??100);
+  const ownStillRegistered=players.some(p=>p.user_id===user.id);
+  if(myPlayer && (!ownStillRegistered || ownHealth<=0)){
+   if(channel){await sb.removeChannel(channel);channel=null;}
+   room=null;myPlayer=null;myState=null;turn=null;submitted=false;playerCache=[];
+   $('gameArea').classList.add('hidden');$('setupPanel').classList.remove('hidden');
+   await loadAvailableCountries();
+   msg($('setupMsg'),'کشورت از بازی حذف شد. حالا می‌توانی با یک کشور آزاد دوباره ثبت‌نام کنی.','ok');
+   return;
+  }
+  const activePlayers=players.filter(p=>Number(healthRows.find(h=>h.user_id===p.user_id)?.health??100)>0);
+  myState=states.find(x=>x.user_id===user.id)||null;
+  turn=tr.data||null;
+  submitted=!!(turn&&(subr.data||[]).some(x=>x.user_id===user.id&&x.round_number===turn.current_round));
+  renderPlayers(activePlayers,states,healthRows);renderState(healthRows);renderTurn(activePlayers,subr.data||[]);
+  renderEvents(er.data||[]);renderChat(mr.data||[]);await loadV9Data();await loadLeaderboard();
+ }catch(e){msg($('actionMsg'),'خطای دریافت اطلاعات: '+(e.message||e),'error')}
+ finally{refreshing=false}
+}
+async function loadLeaderboard(){
+ const box=$('leaderboardList');
+ if(!box||!sb||!room)return;
+ try{
+  const {data,error}=await sb.from('world_leaderboard').select('user_id,country,nickname,total_attacks,health,score,rank').eq('room_id',room.id).order('rank',{ascending:true}).limit(10);
+  if(error)throw error;
+  const rows=data||[];box.innerHTML='';
+  if(!rows.length){box.innerHTML='<div class="leaderboard-empty">هنوز بازیکن فعالی در این جهان وجود ندارد.</div>';return;}
+  rows.forEach((r,i)=>{
+   const rank=Number(r.rank)||i+1,c=countryCode(r.country);
+   const row=document.createElement('div');row.className='leaderboard-row rank-'+rank+(r.user_id===user?.id?' mine':'');
+   const rankBox=document.createElement('div');rankBox.className='leaderboard-rank';rankBox.textContent=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':fmt(rank);
+   const person=document.createElement('div');person.className='leaderboard-person';
+   const name=document.createElement('b');name.textContent=c.f+' '+(r.nickname||c.n||'بازیکن');
+   const detail=document.createElement('small');detail.textContent=c.n+' • '+fmt(r.total_attacks)+' حمله • سلامت '+fmt(r.health)+'٪';
+   person.append(name,detail);
+   const score=document.createElement('div');score.className='leaderboard-score';score.textContent=Number(r.score||0).toLocaleString('fa-IR',{maximumFractionDigits:2});
+   const scoreLabel=document.createElement('small');scoreLabel.textContent='امتیاز';score.append(scoreLabel);
+   row.append(rankBox,person,score);box.append(row);
+  });
+ }catch(e){
+  box.innerHTML='';const errorBox=document.createElement('div');errorBox.className='leaderboard-empty';
+  errorBox.textContent='دریافت لیدربرد ناموفق بود؛ دسترسی SELECT به View با نام world_leaderboard را بررسی کن. ('+(e.message||'خطا')+')';box.append(errorBox);
+ }
+}
+
+const economyCosts={operation:{air:5000,naval:3500,cyber:2500,defense:2000},equipment:{missiles:100,naval_ships:250,fighters:200,tankers:180,air_defense:120,cyber_level:300}};
+function updateEconomyPreview(){
+ const op=$('operationType')?.value||'air';
+ const mil=$('militaryType')?.value||'missiles';
+ const qty=Math.max(1,Math.min(100,Number($('militaryQty')?.value||1)));
+ const project=$('projectType')?.value||'economy';
+ const dip=$('diplomacyType')?.value||'negotiation';
+ const spy=!!$('espionageTarget')?.value;
+ let label='هزینه عملیات '+({air:'هوایی',naval:'دریایی',cyber:'سایبری',defense:'دفاعی'}[op]||'');
+ let cost=economyCosts.operation[op]??5000;
+ // انتخاب آخرین بخش تعاملی تغییرکرده، هزینه همان بخش را نمایش می‌دهد.
+ const active=document.activeElement?.id;
+ if(active==='militaryType'||active==='militaryQty'){label='خرید '+({missiles:'سامانه پشتیبانی آذر',naval_ships:'ناوگان پشتیبانی موج',fighters:'ناوگان پروازی سپهر',tankers:'شبکه لجستیک',air_defense:'سپر حفاظتی',cyber_level:'فناوری دیجیتال'}[mil]||'تجهیزات');cost=economyCosts.equipment[mil]*qty;}
+ else if(active==='projectType'){label='پروژه توسعه';cost=10000;}
+ else if(active==='diplomacyType'){label='درخواست دیپلماسی';cost=500;}
+ else if(active==='espionageTarget'){label='جاسوسی';cost=1500;}
+ else if(active==='useHydraulicBombBtn'){label='بمب هیدرولیک';cost=0;}
+ $('economyPreviewLabel').textContent=label;
+ $('economyPreviewCost').textContent=cost===0?'رایگان':fmtUSD(cost);
+}
+function renderState(healthRows=[]){
+ const c=countryCode(myPlayer?.country);
+ $('myCountry').textContent=c.n;$('myFlag').textContent=c.f;$('myNickname').textContent=myPlayer?.nickname||'فرمانده';
+ $('budget').textContent=fmtUSD(myState?.budget);$('income').textContent='درآمد هر دور (USD): '+fmtUSD(myState?.income);
+ $('economyBudget').textContent=fmtUSD(myState?.budget);$('economyIncome').textContent=fmtUSD(myState?.income);updateEconomyPreview();
+ $('army').textContent=fmt(myState?.army);$('technology').textContent=fmt(myState?.technology);$('stability').textContent=fmt(myState?.stability);
+ const ownHealth=Math.max(0,Math.min(100,Number(healthRows.find(x=>x.user_id===user.id)?.health??100)));$('myHealthValue').textContent=fmt(ownHealth)+'٪';$('myHealthBar').style.width=ownHealth+'%';$('myHealthBar').className='health-fill '+(ownHealth>=60?'good':ownHealth>=30?'mid':'');
+ $('roundNum').textContent=turn?.current_round?fmt(turn.current_round):'—';$('roundTag').textContent=turn?.current_round?fmt(turn.current_round):'—';
+ const active=!!turn?.game_started&&!submitted;
+ document.querySelectorAll('[data-action]').forEach(b=>b.disabled=!active);
+ $('endTurnBtn').disabled=!active;
+}
+function renderPlayers(players,states,healthRows=[]){
+ playerCache=players||[];mapStateCache=states||[];mapHealthCache=healthRows||[];
+ renderStrategicMap();
+ ['diplomacyTarget','operationTarget','espionageTarget','hydraulicBombTarget'].forEach(id=>{const el=$(id);if(!el)return;const old=el.value;el.innerHTML='<option value="">انتخاب کشور</option>';playerCache.filter(p=>p.user_id!==user.id).forEach(p=>{const c=countryCode(p.country);const op=document.createElement('option');op.value=p.user_id;op.textContent=c.f+' '+c.n;el.append(op)});el.value=old});
+ $('players').innerHTML='';
+ const target=$('targetCountry');const old=target.value;target.innerHTML='<option value="">بدون هدف</option>';
+ players.forEach(p=>{
+  const c=countryCode(p.country);
+  const div=document.createElement('div');div.className='player';
+  const left=document.createElement('div');left.className='mini';left.textContent=c.f;
+  const info=document.createElement('div');const b=document.createElement('b');b.textContent=c.n;
+  const sm=document.createElement('small');sm.textContent=(p.nickname||'بازیکن')+(p.user_id===user.id?' • شما':'');
+  info.append(b,sm);const status=document.createElement('i');status.className='status';div.append(left,info,status);$('players').append(div);
+  if(p.user_id!==user.id){const op=document.createElement('option');op.value=p.country;op.textContent=c.f+' '+c.n;target.append(op)}
+ });
+ target.value=old;
+}
+function renderTurn(players,subs){
+ const count=players.length,done=turn?(subs.filter(x=>x.round_number===turn.current_round).length):0;
+ const pct=count?Math.round(done/count*100):0;
+ $('submittedCount').textContent=fmt(done);$('playerCount').textContent='از '+fmt(count)+' بازیکن آماده';
+ $('turnProgress').style.width=pct+'%';$('progressPct').textContent=fmt(pct)+'٪ تکمیل شده';$('remaining').textContent=fmt(Math.max(0,count-done))+' نفر باقی‌مانده';
+ $('startBtn').classList.toggle('hidden',!!turn?.game_started||room?.created_by!==user.id);
+ if(!turn?.game_started)msg($('turnMsg'),room?.created_by===user.id?'برای آغاز، دکمه شروع بازی را بزن.':'منتظر شروع بازی توسط سازنده اتاق هستیم.');
+ else if(submitted)msg($('turnMsg'),'نوبت این دور را ثبت کرده‌ای؛ منتظر بقیه بازیکنان بمان.','ok');
+ else msg($('turnMsg'),'بازی فعال است. اقداماتت را انجام بده و پایان نوبت را ثبت کن.');
+}
+function renderEvents(rows){
+ const box=$('events');box.innerHTML='';
+ if(!rows.length){box.textContent='هنوز رویدادی ثبت نشده است.';return}
+ rows.forEach(r=>{const d=document.createElement('div');d.className='event';const dot=document.createElement('i');dot.className='dot';const p=document.createElement('p');p.textContent=r.event_text||'رویداد بازی';const sm=document.createElement('small');sm.textContent=r.created_at?new Date(r.created_at).toLocaleString('fa-IR'):'';p.append(sm);d.append(dot,p);box.append(d)})
+}
+function renderChat(rows){
+ const box=$('chatList');box.innerHTML='';
+ rows.forEach(r=>{const d=document.createElement('div');d.className='chatmsg';const b=document.createElement('b');b.textContent=(r.sender_id===user.id?'شما':('بازیکن '+String(r.sender_id||'').slice(0,5)))+' : ';d.append(b,document.createTextNode(r.content||''));box.append(d)});
+ box.scrollTop=box.scrollHeight;
+}
+function subscribe(){
+ if(channel)sb.removeChannel(channel);
+ channel=sb.channel('room-'+room.id)
+ .on('postgres_changes',{event:'*',schema:'public',table:'players',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'world_operations',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'world_country_health',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'game_states',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'room_turns',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'turn_submissions',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'game_events',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'world_market_offers',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'world_resources',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'world_projects',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .on('postgres_changes',{event:'*',schema:'public',table:'world_notifications',filter:'room_id=eq.'+room.id},()=>loadAll())
+ .subscribe();
+}
+function addLine(container,text,sub=''){
+ const d=document.createElement('div');d.className='event';const dot=document.createElement('i');dot.className='dot';const p=document.createElement('p');p.textContent=text;if(sub){const sm=document.createElement('small');sm.textContent=sub;p.append(sm)}d.append(dot,p);container.append(d);return d;
+}
+let hydraulicBombInventory=0;
+function renderHydraulicBombs(count, readError){
+ const tokens=$('hydraulicBombTokens'),label=$('hydraulicBombCount'),button=$('useHydraulicBombBtn'),info=$('hydraulicBombInfo');
+ if(readError || !Number.isInteger(Number(count))){
+  hydraulicBombInventory=0;label.textContent='موجودی نامشخص';button.disabled=true;info.textContent='موجودی بمب از دیتابیس خوانده نشد؛ دسترسی خواندن جدول world_military را بررسی کن.';return;
+ }
+ const n=Math.max(0,Number(count));hydraulicBombInventory=n;tokens.innerHTML='';
+ for(let i=0;i<Math.min(3,n);i++){const t=document.createElement('span');t.className='bomb-token';t.textContent='✦';tokens.append(t)}
+ for(let i=Math.min(3,n);i<3;i++){const t=document.createElement('span');t.className='bomb-token spent';t.textContent='✦';tokens.append(t)}
+ label.textContent=fmt(n)+' موجود';button.disabled=n<=0 || !room || !user;
+ info.textContent=n>0?'آماده استفاده است. هزینه بودجه صفر است؛ با هر بار استفاده یک عدد از موجودی کم می‌شود.':'موجودی بمب تمام شده است.';
+}
+async function useHydraulicBomb(){
+ try{
+  const target=$('hydraulicBombTarget').value;
+  if(!target)throw Error('ابتدا کشور هدف را انتخاب کن.');
+  const targetPlayer=playerCache.find(p=>p.user_id===target);
+  if(!targetPlayer)throw Error('کشور هدف در این جهان پیدا نشد.');
+  $('useHydraulicBombBtn').disabled=true;
+  const {data,error}=await sb.rpc('use_hydraulic_bomb',{p_room_code:room.room_code,p_target_user_id:target});
+  if(error)throw error;
+  const result=Array.isArray(data)?data[0]:data;
+  const remaining=Number(result?.bombs_remaining);
+  const health=Number(result?.new_health);
+  msg($('hydraulicBombInfo'),`استفاده ثبت شد؛ هزینه بودجه: ۰ • موجودی باقی‌مانده: ${Number.isFinite(remaining)?fmt(remaining):'—'} • سلامت هدف: ${Number.isFinite(health)?fmt(health)+'٪':'—'}${result?.eliminated?' • کشور در بازی حذف‌شده محسوب می‌شود.':''}`,'ok');
+  if(targetPlayer)animateMapEvent(myPlayer?.country,targetPlayer.country,'operation');
+  await loadAll();
+ }catch(e){msg($('hydraulicBombInfo'),'استفاده ناموفق بود: '+(e.message||String(e)),'error');}
+ finally{$('useHydraulicBombBtn').disabled=hydraulicBombInventory<=0;}
+}
+const resourceNames={oil:'نفت',fuel:'سوخت',food:'غذا',metal:'فلز',equipment:'تجهیزات'};
+const projectNames={economy:'اقتصاد',technology:'فناوری',energy:'انرژی',industry:'صنعت',infrastructure:'زیرساخت'};
+const equipmentNames={missiles:'سامانه پشتیبانی آذر',naval_ships:'ناوگان پشتیبانی موج',fighters:'ناوگان پروازی سپهر',tankers:'شبکه لجستیک',air_defense:'سپر حفاظتی',cyber_level:'فناوری دیجیتال'};
+async function loadV9Data(){
+ if(!sb||!room||!user)return;
+ const [m,s,n,bombRow]=await Promise.all([
+  sb.rpc('get_world_market_data',{p_room_code:room.room_code}),
+  sb.rpc('get_world_systems_data',{p_room_code:room.room_code}),
+  sb.from('world_notifications').select('id,room_id,recipient_user_id,actor_user_id,category,title,body,is_read,created_at,related_id').eq('room_id',room.id).eq('recipient_user_id',user.id).order('created_at',{ascending:false}).limit(50),
+  sb.from('world_military').select('hydraulic_bombs').eq('room_id',room.id).eq('user_id',user.id).maybeSingle()
+ ]);
+ for(const r of [m,s,n])if(r.error)throw r.error;
+ const systemsMilitary=Array.isArray(s.data?.military)?s.data.military.find(x=>x.user_id===user.id):null;
+ const bombCount=bombRow.error ? systemsMilitary?.hydraulic_bombs : bombRow.data?.hydraulic_bombs;
+ renderHydraulicBombs(bombCount, bombRow.error && bombCount===undefined ? bombRow.error : null);
+ marketCache=m.data||{};systemsCache=s.data||{};
+ if(selectedMapCountry)selectMapCountry(selectedMapCountry);
+ // اعلان‌ها مستقیماً از جدول و با فیلتر گیرنده خوانده می‌شوند؛ به خروجی RPC وابسته نیستند.
+ systemsCache.notifications=n.data||[];
+ renderMarket(marketCache);
+ const diplomacyRows=Array.isArray(systemsCache.diplomacy)
+  ? systemsCache.diplomacy
+  : Array.isArray(systemsCache.diplomacy?.requests)
+   ? systemsCache.diplomacy.requests
+   : [];
+ renderSystems(systemsCache,diplomacyRows);
+}
+function renderMarket(data){
+ const resources=$('resourceList');resources.innerHTML='';
+ (data.my_resources||[]).forEach(x=>{const b=document.createElement('span');b.className='pill';b.textContent=(resourceNames[x.resource_type]||x.resource_type)+': '+fmt(x.quantity);resources.append(b)});
+ if(!resources.children.length)resources.textContent='موجودی ثبت نشده است.';
+ const offers=$('offerList');offers.innerHTML='';
+ (data.offers||[]).forEach(o=>{const seller=playerCache.find(p=>p.user_id===o.seller_user_id);const country=seller?countryCode(seller.country).n:'کشور فروشنده';const d=addLine(offers,`${resourceNames[o.resource_type]||o.resource_type} | مقدار ${fmt(o.quantity)} | قیمت واحد ${fmt(o.unit_price)} | فروشنده: ${country}`,`اعتبار اعلام‌شده: ${o.duration_rounds} دور`);if(o.seller_user_id!==user.id){const b=document.createElement('button');b.className='secondary';b.textContent='خرید کامل پیشنهاد';b.style.marginTop='6px';b.addEventListener('click',()=>buyOffer(o.id));d.querySelector('p').append(document.createElement('br'),b)}});
+ if(!offers.children.length)offers.textContent='در حال حاضر پیشنهاد فعالی وجود ندارد.';
+ const tx=$('transactionList');tx.innerHTML='';(data.transactions||[]).forEach(t=>{const side=t.buyer_user_id===user.id?'خرید شما':'معامله بازار';addLine(tx,`${side}: ${resourceNames[t.resource_type]||t.resource_type} × ${fmt(t.quantity)} | مبلغ ${fmt(t.total_price)}` ,t.created_at?new Date(t.created_at).toLocaleString('fa-IR'):'')});if(!tx.children.length)tx.textContent='هنوز معامله‌ای ثبت نشده است.';
+}
+function renderSystems(data,diplomacy){
+ const mil=$('militaryInfo');mil.innerHTML='';const mine=(data.military||[]).find(x=>x.user_id===user.id);
+ if(mine){Object.entries(equipmentNames).forEach(([k,n])=>{const v=mine[k];if(v!==undefined){const b=document.createElement('span');b.className='pill';b.textContent=n+': '+fmt(v);mil.append(b)}})}
+ if(!mil.children.length)mil.textContent='هنوز اطلاعات تجهیزات ثبت نشده است.';
+ const projects=$('projectList');projects.innerHTML='';(data.projects||[]).filter(x=>x.user_id===user.id).forEach(x=>addLine(projects,`${x.title||projectNames[x.project_type]||x.project_type}: ${x.status==='completed'?'تکمیل‌شده':'در حال اجرا'} (${fmt(x.rounds_done)} از ${fmt(x.total_rounds)} دور)`));if(!projects.children.length)projects.textContent='هنوز پروژه‌ای ثبت نشده است.';
+ const dl=$('diplomacyList');dl.innerHTML='';(Array.isArray(diplomacy)?diplomacy:[]).forEach(x=>{const incoming=x.recipient_user_id===user.id;const other=playerCache.find(p=>p.user_id===(incoming?x.sender_user_id:x.recipient_user_id));const who=other?countryCode(other.country).n:'کشور دیگر';const d=addLine(dl,`${incoming?'درخواست از':'درخواست به'} ${who} • ${x.request_type} • ${x.status}`,x.message||'');if(incoming&&x.status==='pending'){['accepted','rejected'].forEach(dec=>{const b=document.createElement('button');b.className='secondary';b.style.margin='5px 5px 0 0';b.textContent=dec==='accepted'?'پذیرش':'رد';b.addEventListener('click',()=>respondDiplomacy(x.id,dec));d.querySelector('p').append(document.createElement('br'),b)})}});if(!dl.children.length)dl.textContent='درخواستی ثبت نشده است.';
+ const ops=$('operationInfo');ops.textContent=(data.operations||[]).slice(0,8).map(x=>`${x.operation_type}: ${x.summary||x.outcome}`).join(' | ')||'هنوز عملیاتی ثبت نشده است.';
+ const notes=$('notificationList');notes.innerHTML='';(data.notifications||[]).forEach(n=>{const actor=playerCache.find(p=>p.user_id===n.actor_user_id);const actorName=actor?countryCode(actor.country).n:'';const heading=`${n.title||'اعلان'}${actorName?' • از '+actorName:''}${n.is_read?'':' • خوانده‌نشده'}`;const d=addLine(notes,heading,n.body||n.message||'جزئیات بیشتری ثبت نشده است.');if(!n.is_read){const b=document.createElement('button');b.className='secondary';b.textContent='خواندم';b.style.marginTop='5px';b.addEventListener('click',()=>markNotification(n.id));d.querySelector('p').append(document.createElement('br'),b)}});if(!notes.children.length)notes.textContent='اعلان جدیدی ندارید.';
+}
+
+const operationLabels={
+ air:'حمله هوایی/موشکی',naval:'عملیات دریایی',cyber:'حمله سایبری',defense:'دفاع ملی',
+ espionage:'مأموریت اطلاعاتی',negotiation:'مذاکره',trade:'تجارت',peace:'پیشنهاد صلح',
+ alliance:'پیشنهاد اتحاد',peace_offer:'پیشنهاد صلح',trade_offer:'پیشنهاد تجاری'
+};
+function reportCountryName(value){
+ if(!value)return '';
+ return countries[value]?.n || value;
+}
+function reportOutcome(value){
+ if(!value)return '';
+ const labels={success:'موفق',successful:'موفق',failed:'ناموفق',failure:'ناموفق',completed:'تکمیل‌شده',accepted:'پذیرفته‌شده',rejected:'ردشده',pending:'در انتظار پاسخ'};
+ return labels[String(value).toLowerCase()] || String(value);
+}
+function openDailyReport(){
+ if(!room){alert('ابتدا وارد جهان مشترک شو.');return;}
+ $('dailyReportModal').classList.add('open');loadDailyReport();
+}
+function closeDailyReport(){$('dailyReportModal').classList.remove('open')}
+async function loadDailyReport(){
+ const box=$('dailyReportEvents');box.innerHTML='';
+ msg($('dailyReportStatus'),'در حال دریافت تمام اخبار و رویدادهای جهان...');
+ try{
+  const lastRound=Math.max(1,Number(turn?.current_round||1));
+  const requests=[];
+  for(let day=1;day<=lastRound;day++){
+   requests.push(sb.rpc('get_world_daily_report',{p_room_code:room.room_code,p_day:day}));
+  }
+  const results=await Promise.all(requests);
+  const allEvents=[];
+  for(let i=0;i<results.length;i++){
+   const {data,error}=results[i];
+   if(error)throw error;
+   if(data?.success===false)throw Error(data.message||'دریافت اخبار انجام نشد.');
+   const events=Array.isArray(data?.events)?data.events:(Array.isArray(data)?data:[]);
+   // کلیدهای واقعی خروجی SQL: time, day, type, actor, target, action, outcome, details
+   events.forEach(ev=>allEvents.push({...ev,_report_day:Number(ev.day||ev.round_number||i+1)}));
+  }
+  const unique=new Map();
+  allEvents.forEach((ev,index)=>{
+   const key=ev.id||[ev.time||ev.created_at,ev.type,ev.actor,ev.target,ev.action,ev.details,ev.outcome].join('|')||String(index);
+   if(!unique.has(key))unique.set(key,ev);
+  });
+  const events=[...unique.values()].sort((a,b)=>new Date(b.time||b.created_at||0)-new Date(a.time||a.created_at||0));
+  if(!events.length){
+   msg($('dailyReportStatus'),'هنوز هیچ خبری در جهان ثبت نشده است.','ok');
+   box.innerHTML='<div class="daily-empty">با ثبت عملیات، دیپلماسی و رویدادهای جدید، اخبار اینجا نمایش داده می‌شوند.</div>';return;
+  }
+  msg($('dailyReportStatus'),'مجموعاً '+fmt(events.length)+' خبر و رویداد از تمام دورهای جهان • مشترک بین همه بازیکنان','ok');
+  events.forEach(ev=>{
+   const item=document.createElement('div');item.className='daily-item';
+   const eventType=ev.type||ev.event_type||'';
+   const actionKey=ev.action||ev.operation_type||ev.request_type||'';
+   const actionName=operationLabels[actionKey]||actionKey|| (eventType==='event'?'رویداد عمومی':'رویداد جهان');
+   const actor=reportCountryName(ev.actor||ev.actor_country||ev.actor_nickname||ev.sender_country||ev.sender_nickname);
+   const target=reportCountryName(ev.target||ev.target_country||ev.target_nickname||ev.recipient_country||ev.recipient_nickname);
+   let title=actionName;
+   if(actor&&target){
+    title += actionKey==='defense' ? ' • کشور '+actor : ' • از '+actor+' به '+target;
+   }else if(actor){
+    title += ' • '+actor;
+   }
+   const heading=document.createElement('b');heading.textContent=title;item.append(heading);
+   const day=document.createElement('small');day.textContent='دور '+fmt(ev._report_day);item.append(day);
+   const detail=ev.details||ev.summary||ev.event_text||ev.message||ev.body||ev.title||'';
+   if(detail){const d=document.createElement('div');d.textContent=detail;item.append(d)}
+   const outcome=reportOutcome(ev.outcome);
+   if(outcome){const st=document.createElement('div');st.textContent='نتیجه: '+outcome;item.append(st)}
+   const eventTime=ev.time||ev.created_at;
+   if(eventTime){const tm=document.createElement('small');tm.textContent=new Date(eventTime).toLocaleString('fa-IR');item.append(tm)}
+   box.append(item);
+  });
+ }catch(e){msg($('dailyReportStatus'),'اخبار دریافت نشد: '+(e.message||String(e)),'error');}
+}
+$('dailyReportOpen').addEventListener('click',openDailyReport);
+$('dailyReportClose').addEventListener('click',closeDailyReport);
+$('dailyLoadBtn').addEventListener('click',loadDailyReport);
+$('dailyReportModal').addEventListener('click',e=>{if(e.target===$('dailyReportModal'))closeDailyReport()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDailyReport()});
+async function buyOffer(id){try{const {data,error}=await sb.rpc('buy_world_market_offer',{p_room_code:room.room_code,p_offer_id:id});if(error)throw error;msg($('actionMsg'),data?.message||'خرید انجام شد.','ok');await loadAll()}catch(e){msg($('actionMsg'),'خرید ناموفق بود: '+e.message,'error')}}
+async function createOffer(){try{const args={p_room_code:room.room_code,p_resource_type:$('offerResource').value,p_quantity:Number($('offerQty').value),p_unit_price:Number($('offerPrice').value),p_duration_rounds:Number($('offerDuration').value)};const {data,error}=await sb.rpc('create_world_market_offer',args);if(error)throw error;msg($('actionMsg'),'پیشنهاد فروش ثبت شد.','ok');await loadAll()}catch(e){msg($('actionMsg'),'ثبت پیشنهاد ناموفق بود: '+e.message,'error')}}
+async function buyMilitary(){try{const q=Number($('militaryQty').value);if(!Number.isInteger(q)||q<1||q>100)throw Error('تعداد باید بین ۱ تا ۱۰۰ باشد.');const {data,error}=await sb.rpc('buy_military_equipment',{p_room_code:room.room_code,p_equipment:$('militaryType').value,p_quantity:q});if(error)throw error;msg($('actionMsg'),'خرید تجهیزات انجام شد.','ok');await loadAll()}catch(e){msg($('actionMsg'),'خرید تجهیزات ناموفق بود: '+e.message,'error')}}
+async function startProject(){try{const {data,error}=await sb.rpc('start_world_project',{p_room_code:room.room_code,p_project_type:$('projectType').value});if(error)throw error;msg($('actionMsg'),'پروژه توسعه آغاز شد.','ok');await loadAll()}catch(e){msg($('actionMsg'),'آغاز پروژه ناموفق بود: '+e.message,'error')}}
+async function sendDiplomacy(){try{const target=$('diplomacyTarget').value;if(!target)throw Error('کشور مقصد را انتخاب کن.');const {data,error}=await sb.rpc('send_diplomacy_request',{p_room_code:room.room_code,p_recipient_user_id:target,p_request_type:$('diplomacyType').value,p_message:$('diplomacyMessage').value.trim()});if(error)throw error;$('diplomacyMessage').value='';msg($('actionMsg'),'درخواست دیپلماتیک ارسال شد.','ok');await loadAll()}catch(e){msg($('actionMsg'),'ارسال درخواست ناموفق بود: '+e.message,'error')}}
+async function respondDiplomacy(id,decision){try{const {error}=await sb.rpc('respond_diplomacy_request',{p_request_id:id,p_decision:decision});if(error)throw error;await loadAll()}catch(e){msg($('actionMsg'),'ثبت پاسخ ناموفق بود: '+e.message,'error')}}
+async function markNotification(id){try{const {error}=await sb.rpc('mark_world_notification_read',{p_notification_id:id});if(error)throw error;await loadAll()}catch(e){msg($('actionMsg'),'به‌روزرسانی اعلان ناموفق بود: '+e.message,'error')}}
+async function registerOperation(){try{const target=$('operationTarget').value;if(!target)throw Error('کشور هدف را انتخاب کن.');const targetPlayer=playerCache.find(p=>p.user_id===target);const operationType=$('operationType').value;const operationVariant=$('operationVariant').value;const chosen=$('operationVariant').selectedOptions[0]?.textContent||'سناریوی بازی';if(!operationVariant)throw Error('یک گزینه برای عملیات انتخاب کن.');const {data,error}=await sb.rpc('register_world_operation_with_variant',{p_room_code:room.room_code,p_target_user_id:target,p_operation_type:operationType,p_operation_variant:operationVariant});if(error)throw error;msg($('actionMsg'),'عملیات بازی ثبت شد • گزینه ذخیره‌شده: '+chosen+' • رویداد روی نقشه نمایش داده می‌شود.','ok');if(targetPlayer)animateMapEvent(myPlayer?.country,targetPlayer.country,operationType);await loadAll()}catch(e){msg($('actionMsg'),'ثبت عملیات ناموفق بود: '+e.message,'error')}}
+async function runEspionage(){try{const target=$('espionageTarget').value;if(!target)throw Error('کشور هدف را انتخاب کن.');const p=playerCache.find(x=>x.user_id===target);if(!p)throw Error('کشور هدف پیدا نشد.');const {data,error}=await sb.rpc('run_world_espionage',{p_room_code:room.room_code,p_target_country:p.country});if(error)throw error;msg($('operationInfo'),data?.success?'گزارش مأموریت دریافت شد.':'مأموریت انجام شد.','ok');await loadAll()}catch(e){msg($('operationInfo'),'مأموریت ناموفق بود: '+e.message,'error')}}
+
+async function startGame(){
+ try{const {data,error}=await sb.rpc('start_game',{p_room_code:room.room_code});if(error)throw error;msg($('turnMsg'),data?.message||'بازی شروع شد.','ok');await loadAll()}
+ catch(e){msg($('turnMsg'),'شروع بازی ناموفق بود: '+e.message,'error')}
+}
+async function doAction(action){
+ try{
+  const {data,error}=await sb.rpc('game_action',{p_room_code:room.room_code,p_action:action,p_target_country:$('targetCountry').value||null});
+  if(error)throw error;
+  msg($('actionMsg'),'اقدام با موفقیت ثبت شد.','ok');await loadAll();
+ }catch(e){msg($('actionMsg'),'ثبت اقدام ناموفق بود: '+e.message,'error')}
+}
+async function endTurn(){
+ try{
+  if(!turn?.current_round)throw Error('شماره دور دریافت نشده است.');
+  const {data,error}=await sb.rpc('end_turn',{p_room_code:room.room_code,p_round_number:turn.current_round});
+  if(error)throw error;
+  msg($('actionMsg'),data?.message||'پایان نوبت ثبت شد.','ok');await loadAll();
+ }catch(e){msg($('actionMsg'),'ثبت پایان نوبت ناموفق بود: '+e.message,'error')}
+}
+async function sendChat(){
+ try{const content=$('chatInput').value.trim();if(!content)return;
+  const {error}=await sb.from('messages').insert({room_id:room.id,sender_id:user.id,content});
+  if(error)throw error;$('chatInput').value='';await loadAll();
+ }catch(e){msg($('actionMsg'),'ارسال پیام ناموفق بود: '+e.message,'error')}
+}
+updateOperationVariants();$('operationType').addEventListener('change',updateOperationVariants);
+$('mapCountrySearch')?.addEventListener('input',renderStrategicMap);
+$('mapCountryFilter')?.addEventListener('change',renderStrategicMap);
+$('mapShowAllBtn')?.addEventListener('click',()=>{$('mapCountrySearch').value='';$('mapCountryFilter').value='all';renderStrategicMap();});
+
+function setupMapFullscreen(){
+ const panel=$('worldMapPanel'),open=$('mapExpandBtn'),close=$('mapCloseFullscreenBtn');
+ if(!panel||!open||!close)return;
+ const setOpen=active=>{
+  panel.classList.toggle('map-fullscreen',active);
+  document.body.classList.toggle('map-fullscreen-open',active);
+  open.setAttribute('aria-expanded',active?'true':'false');
+  if(active){close.focus();}else{open.focus();}
+ };
+ open.addEventListener('click',()=>setOpen(true));
+ close.addEventListener('click',()=>setOpen(false));
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&panel.classList.contains('map-fullscreen'))setOpen(false)});
+}
+
+setupMapFullscreen();
+loadAccurateMap();
+['operationType','militaryType','militaryQty','projectType','diplomacyType','espionageTarget'].forEach(id=>{const el=$(id);if(el){el.addEventListener('change',updateEconomyPreview);el.addEventListener('input',updateEconomyPreview)}});
+updateEconomyPreview();
+$('buyMilitaryBtn').addEventListener('click',buyMilitary);
+$('useHydraulicBombBtn').addEventListener('click',useHydraulicBomb);
+$('startProjectBtn').addEventListener('click',startProject);
+$('sendDiplomacyBtn').addEventListener('click',sendDiplomacy);
+$('registerOperationBtn').addEventListener('click',registerOperation);
+$('espionageBtn').addEventListener('click',runEspionage);
+$('createOfferBtn').addEventListener('click',createOffer);
+$('connectBtn').addEventListener('click',connect);
+$('enterWorldBtn').addEventListener('click',joinGlobalWorld);
+$('startBtn').addEventListener('click',startGame);
+$('endTurnBtn').addEventListener('click',endTurn);
+$('sendChat').addEventListener('click',sendChat);
+$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>doAction(b.dataset.action)));
+})();
+</script></body></html>
+<style id="v23-static-map-label-spacing">
+/* V23: fixed map and spaced country labels; leaderboard code is preserved from V21. */
+#worldMapSvg{cursor:default!important}
+#worldMapSvg:active{cursor:default!important}
+#worldMapSvg #mapViewport{transition:none!important}
+#worldMapSvg .map-marker,
+#worldMapSvg .map-marker *{animation:none!important;transition:none!important}
+#worldMapSvg .map-marker .ping{display:none!important}
+#worldMapSvg .map-marker .marker-leader{fill:none;stroke:#b9d8df;stroke-width:2.2;stroke-linecap:round;opacity:.85;pointer-events:none}
+#worldMapSvg .map-marker .marker-pill{stroke-width:2.4}
+#worldMapSvg .map-marker text{font-size:20px;letter-spacing:.2px}
+#worldMapSvg .map-route,
+#worldMapSvg .map-impact{animation:none!important}
+</style>
